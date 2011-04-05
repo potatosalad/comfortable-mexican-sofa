@@ -24,4 +24,15 @@ class CmsSite
   def self.options_for_select
     CmsSite.all.collect{|s| ["#{s.label} (#{s.hostname})", s.id]}
   end
+
+  def self.find_by_hostname!(hostname)
+    criteria = where(:hostname => hostname)
+    raise Mongoid::Errors::DocumentNotFound.new(self, hostname) unless criteria.exists?
+    criteria.first
+  end
+
+  def self.find_by_id(id)
+    return if id.nil?
+    find(id)
+  end
 end

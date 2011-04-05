@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem 'rails',          '>=3.0.5'
 gem 'active_link_to', '>=0.0.6'
 gem 'paperclip',      '>=2.3.8'
+gem 'mongoid-paperclip', :require => 'mongoid_paperclip'
 gem 'mime-types',     :require => 'mime/types'
 
 # If you wish to use sqlite in production

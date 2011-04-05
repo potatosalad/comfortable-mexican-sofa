@@ -86,6 +86,11 @@ class CmsLayout
     nil
   end
 
+  def self.find_by_id(id)
+    return if id.nil?
+    find(id)
+  end
+
   # -- Instance Methods -----------------------------------------------------
   # magical merging tag is {cms:page:content} If parent layout has this tag
   # defined its content will be merged. If no such tag found, parent content

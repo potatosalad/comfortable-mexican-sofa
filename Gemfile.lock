@@ -45,6 +45,8 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    mongoid-paperclip (0.0.4)
+      paperclip (~> 2.3.6)
     paperclip (2.3.8)
       activerecord
       activesupport
@@ -80,5 +82,6 @@ DEPENDENCIES
   active_link_to (>= 0.0.6)
   jeweler (>= 1.4.0)
   mime-types
+  mongoid-paperclip
   paperclip (>= 2.3.8)
   rails (>= 3.0.5)

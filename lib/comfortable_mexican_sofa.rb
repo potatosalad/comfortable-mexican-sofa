@@ -10,7 +10,6 @@ end
   'comfortable_mexican_sofa/view_hooks',
   'comfortable_mexican_sofa/view_methods',
   'comfortable_mexican_sofa/form_builder',
-  'comfortable_mexican_sofa/acts_as_tree',
   '../app/models/cms_block',
   '../app/models/cms_snippet',
   'comfortable_mexican_sofa/cms_tag' 

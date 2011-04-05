@@ -47,8 +47,8 @@ class CmsPage
   validate :validate_target_page
 
   # -- Scopes ---------------------------------------------------------------
-  default_scope order(:position)
-  scope :published, where(:is_published => true)
+  default_scope :order => :position
+  scope :published, :where => { :is_published => true }
 
   # -- Class Methods --------------------------------------------------------
   # Tree-like structure for pages
@@ -94,6 +94,11 @@ class CmsPage
     load_for_full_path!(site, path) 
   rescue Mongoid::Errors::DocumentNotFound
     nil
+  end
+
+  def self.find_by_id(id)
+    return if id.nil?
+    find(id)
   end
 
   # -- Instance Methods -----------------------------------------------------
