@@ -1,13 +1,19 @@
-class CmsBlock < ActiveRecord::Base
-  
+class CmsBlock
+  include Mongoid::Document
+  include Mongoid::Timestamps
+
+  # -- Fields ---------------------------------------------------------------
+  field :label,   :type => String
+  field :content, :type => String
+
   # -- Relationships --------------------------------------------------------
-  belongs_to :cms_page
-  
+  referenced_in :cms_page
+
   # -- Validations ----------------------------------------------------------
   validates :label,
     :presence   => true,
     :uniqueness => { :scope => :cms_page_id }
-  
+
   # -- Class Methods --------------------------------------------------------
   def self.initialize_or_find(cms_page, label)
     if block = cms_page.cms_blocks.detect{ |b| b.label == label.to_s }
@@ -24,5 +30,4 @@ class CmsBlock < ActiveRecord::Base
       )
     end
   end
-  
 end

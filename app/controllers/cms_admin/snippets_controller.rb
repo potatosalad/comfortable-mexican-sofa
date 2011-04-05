@@ -20,7 +20,7 @@ class CmsAdmin::SnippetsController < CmsAdmin::BaseController
     @cms_snippet.save!
     flash[:notice] = 'Snippet created'
     redirect_to :action => :edit, :id => @cms_snippet
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     flash.now[:error] = 'Failed to create snippet'
     render :action => :new
   end
@@ -29,7 +29,7 @@ class CmsAdmin::SnippetsController < CmsAdmin::BaseController
     @cms_snippet.update_attributes!(params[:cms_snippet])
     flash[:notice] = 'Snippet updated'
     redirect_to :action => :edit, :id => @cms_snippet
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     flash.now[:error] = 'Failed to update snippet'
     render :action => :edit
   end
@@ -48,7 +48,7 @@ protected
   
   def load_cms_snippet
     @cms_snippet = @cms_site.cms_snippets.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     flash[:error] = 'Snippet not found'
     redirect_to :action => :index
   end

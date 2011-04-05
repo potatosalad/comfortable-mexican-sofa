@@ -23,7 +23,7 @@ class CmsAdmin::PagesController < CmsAdmin::BaseController
     @cms_page.save!
     flash[:notice] = 'Page saved'
     redirect_to :action => :edit, :id => @cms_page
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     flash.now[:error] = 'Failed to create page'
     render :action => :new
   end
@@ -32,7 +32,7 @@ class CmsAdmin::PagesController < CmsAdmin::BaseController
     @cms_page.save!
     flash[:notice] = 'Page updated'
     redirect_to :action => :edit, :id => @cms_page
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     flash.now[:error] = 'Failed to update page'
     render :action => :edit
   end
@@ -53,7 +53,7 @@ class CmsAdmin::PagesController < CmsAdmin::BaseController
     s   = (session[:cms_page_tree] ||= [])
     id  = @cms_page.id.to_s
     s.member?(id) ? s.delete(id) : s << id
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     # do nothing
   end
   
@@ -89,7 +89,7 @@ protected
     @cms_page = @cms_site.cms_pages.find(params[:id])
     @cms_page.attributes = params[:cms_page]
     @cms_page.cms_layout ||= (@cms_page.parent && @cms_page.parent.cms_layout || @cms_site.cms_layouts.first)
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     flash[:error] = 'Page not found'
     redirect_to :action => :index
   end

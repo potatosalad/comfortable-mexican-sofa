@@ -22,7 +22,7 @@ class CmsAdmin::SitesController < CmsAdmin::BaseController
     @cms_site.save!
     flash[:notice] = 'Site created'
     redirect_to :action => :edit, :id => @cms_site
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     flash.now[:error] = 'Failed to create site'
     render :action => :new
   end
@@ -31,7 +31,7 @@ class CmsAdmin::SitesController < CmsAdmin::BaseController
     @cms_site.update_attributes!(params[:cms_site])
     flash[:notice] = 'Site updated'
     redirect_to :action => :edit, :id => @cms_site
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     flash.now[:error] = 'Failed to update site'
     render :action => :edit
   end
@@ -51,7 +51,7 @@ protected
   
   def load_cms_site
     @cms_site = CmsSite.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     flash[:error] = 'Site not found'
     redirect_to :action => :index
   end

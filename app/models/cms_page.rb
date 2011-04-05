@@ -1,19 +1,27 @@
-class CmsPage < ActiveRecord::Base
-  
-  # -- AR Extensions --------------------------------------------------------
-  acts_as_tree :counter_cache => :children_count
-  
+class CmsPage
+  include Mongoid::Document
+  include Mongoid::Tree
+  include Mongoid::Timestamps
+
   attr_accessor :cms_tags
-  
+
+  # -- Fields ---------------------------------------------------------------
+  field :label,        :type => String
+  field :slug,         :type => String
+  field :full_path,    :type => String
+  field :content,      :type => String
+  field :position,     :type => Integer, :default => 0
+  field :is_published, :type => Boolean, :default => false
+
   # -- Relationships --------------------------------------------------------
-  belongs_to :cms_site
-  belongs_to :cms_layout
-  belongs_to :target_page,
+  referenced_in :cms_site
+  referenced_in :cms_layout
+  referenced_in :target_page,
     :class_name => 'CmsPage'
-  has_many :cms_blocks,
+  references_many :cms_blocks,
     :dependent  => :destroy
   accepts_nested_attributes_for :cms_blocks
-  
+
   # -- Callbacks ------------------------------------------------------------
   before_validation :assign_parent,
                     :assign_full_path
@@ -21,7 +29,7 @@ class CmsPage < ActiveRecord::Base
                     :on => :create
   before_save :set_cached_content
   after_save  :sync_child_pages
-  
+
   # -- Validations ----------------------------------------------------------
   validates :cms_site_id, 
     :presence   => true
@@ -37,11 +45,11 @@ class CmsPage < ActiveRecord::Base
     :presence   => true,
     :uniqueness => { :scope => :cms_site_id }
   validate :validate_target_page
-  
+
   # -- Scopes ---------------------------------------------------------------
   default_scope order(:position)
   scope :published, where(:is_published => true)
-  
+
   # -- Class Methods --------------------------------------------------------
   # Tree-like structure for pages
   def self.options_for_select(cms_site, cms_page = nil, current_page = nil, depth = 0, exclude_self = true, spacer = '. . ')
@@ -53,7 +61,7 @@ class CmsPage < ActiveRecord::Base
     end
     return out.compact
   end
-  
+
   # Attempting to initialize page object from yaml file that is found in config.seed_data_path
   # This file defines all attributes of the page plus all the block information
   def self.load_from_file(site, path)
@@ -70,7 +78,7 @@ class CmsPage < ActiveRecord::Base
   rescue
     raise "Failed to load from #{file_path}"
   end
-  
+
   # Wrapper around load_from_file and find_by_full_path
   # returns page object if loaded / found
   def self.load_for_full_path!(site, path)
@@ -78,22 +86,22 @@ class CmsPage < ActiveRecord::Base
       load_from_file(site, path)
     else
       site.cms_pages.find_by_full_path(path)
-    end || raise(ActiveRecord::RecordNotFound, "CmsPage with path: #{path} cannot be found")
+    end || raise(Mongoid::Errors::DocumentNotFound.new(self, path), "CmsPage with path: #{path} cannot be found")
   end
-  
+
   # Non-blowing-up version of the method above
   def self.load_for_full_path(site, path)
     load_for_full_path!(site, path) 
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     nil
   end
-  
+
   # -- Instance Methods -----------------------------------------------------
   # For previewing purposes sometimes we need to have full_path set
   def full_path
     self.read_attribute(:full_path) || self.assign_full_path
   end
-  
+
   # Transforms existing cms_block information into a hash that can be used
   # during form processing. That's the only way to modify cms_blocks.
   def cms_blocks_attributes
@@ -105,7 +113,7 @@ class CmsPage < ActiveRecord::Base
       arr << block_attr
     end
   end
-  
+
   # Processing content will return rendered content and will populate 
   # self.cms_tags with instances of CmsTag
   def content(force_reload = false)
@@ -116,35 +124,35 @@ class CmsPage < ActiveRecord::Base
       cms_layout ? CmsTag.process_content(self, cms_layout.merged_content) : ''
     end
   end
-  
+
   # Array of cms_tags for a page. Content generation is called if forced.
   # These also include initialized cms_blocks if present
   def cms_tags(force_reload = false)
     self.content(true) if force_reload
     @cms_tags ||= []
   end
-  
+
   # Full url for a page
   def url
     "http://#{self.cms_site.hostname}#{self.full_path}"
   end
-  
+
 protected
-  
+
   def assign_parent
     self.parent ||= CmsPage.root unless self == CmsPage.root || CmsPage.count == 0
   end
-  
+
   def assign_full_path
     self.full_path = self.parent ? "#{self.parent.full_path}/#{self.slug}".squeeze('/') : '/'
   end
-  
+
   def assign_position
     return unless self.parent
     max = self.parent.children.maximum(:position)
     self.position = max ? max + 1 : 0
   end
-  
+
   def validate_target_page
     return unless self.target_page
     p = self
@@ -152,14 +160,13 @@ protected
       return self.errors.add(:target_page_id, 'Invalid Redirect') if (p = p.target_page) == self
     end
   end
-  
+
   def set_cached_content
     write_attribute(:content, self.content(true))
   end
-  
+
   # Forcing re-saves for child pages so they can update full_paths
   def sync_child_pages
     children.each{ |p| p.save! } if full_path_changed?
   end
-  
 end

@@ -1,13 +1,15 @@
-class CmsUpload < ActiveRecord::Base
+class CmsUpload
+  include Mongoid::Document
+  include Mongoid::Paperclip
+  include Mongoid::Timestamps
 
   # -- AR Extensions --------------------------------------------------------
-  has_attached_file :file, ComfortableMexicanSofa.config.upload_file_options
-  
+  has_mongoid_attached_file :file, ComfortableMexicanSofa.config.upload_file_options
+
   # -- Relationships --------------------------------------------------------
-  belongs_to :cms_site
-  
+  referenced_in :cms_site
+
   # -- Validations ----------------------------------------------------------
   validates :cms_site_id, :presence => true
   validates_attachment_presence :file
-  
 end

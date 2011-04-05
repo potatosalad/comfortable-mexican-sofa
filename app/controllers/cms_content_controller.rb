@@ -23,7 +23,7 @@ protected
   
   def load_cms_site
     @cms_site = CmsSite.find_by_hostname!(ComfortableMexicanSofa.config.override_host || request.host.downcase)
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     render :text => 'Site Not Found', :status => 404
   end
   
@@ -31,7 +31,7 @@ protected
     @cms_page = CmsPage.published.load_for_full_path!(@cms_site, "/#{params[:cms_path]}")
     return redirect_to(@cms_page.target_page.full_path) if @cms_page.target_page
     
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     if @cms_page = CmsPage.published.load_for_full_path(@cms_site, '/404')
       render_html(404)
     else
@@ -41,7 +41,7 @@ protected
   
   def load_cms_layout
     @cms_layout = CmsLayout.load_for_slug!(@cms_site, params[:id])
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     render :nothing => true, :status => 404
   end
   

@@ -16,7 +16,7 @@ protected
     hostname = ComfortableMexicanSofa.config.override_host || request.host.downcase
     @cms_site = CmsSite.find_by_hostname!(hostname)
   
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     
     if ComfortableMexicanSofa.config.auto_manage_sites
       if CmsSite.count == 0

@@ -20,7 +20,7 @@ class CmsAdmin::LayoutsController < CmsAdmin::BaseController
     @cms_layout.save!
     flash[:notice] = 'Layout created'
     redirect_to :action => :edit, :id => @cms_layout
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     flash.now[:error] = 'Failed to create layout'
     render :action => :new
   end
@@ -29,7 +29,7 @@ class CmsAdmin::LayoutsController < CmsAdmin::BaseController
     @cms_layout.update_attributes!(params[:cms_layout])
     flash[:notice] = 'Layout updated'
     redirect_to :action => :edit, :id => @cms_layout
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     flash.now[:error] = 'Failed to update layout'
     render :action => :edit
   end
@@ -50,7 +50,7 @@ protected
   
   def load_cms_layout
     @cms_layout = @cms_site.cms_layouts.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     flash[:error] = 'Layout not found'
     redirect_to :action => :index
   end

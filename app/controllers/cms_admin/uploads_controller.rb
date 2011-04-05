@@ -9,7 +9,7 @@ class CmsAdmin::UploadsController < CmsAdmin::BaseController
   def create
     @cms_upload = @cms_site.cms_uploads.create!(:file => params[:file])
     render :partial => 'file', :object => @cms_upload
-  rescue ActiveRecord::RecordInvalid
+  rescue Mongoid::Errors::Validations
     render :nothing => true, :status => :bad_request
   end
   
@@ -21,7 +21,7 @@ protected
   
   def load_cms_upload
     @cms_upload = @cms_site.cms_uploads.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
+  rescue Mongoid::Errors::DocumentNotFound
     render :nothing => true
   end
 end
