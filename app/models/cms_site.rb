@@ -7,7 +7,11 @@ class CmsSite
 
   # -- Relationships --------------------------------------------------------
   references_many :cms_layouts,  :dependent => :destroy
-  references_many :cms_pages,    :dependent => :destroy
+  references_many :cms_pages,    :dependent => :destroy do
+    def find_by_full_path(full_path)
+      @target.where(:full_path => full_path).first
+    end
+  end
   references_many :cms_snippets, :dependent => :destroy
   references_many :cms_uploads,  :dependent => :destroy
 
@@ -29,10 +33,5 @@ class CmsSite
     criteria = where(:hostname => hostname)
     raise Mongoid::Errors::DocumentNotFound.new(self, hostname) unless criteria.exists?
     criteria.first
-  end
-
-  def self.find_by_id(id)
-    return if id.nil?
-    find(id)
   end
 end

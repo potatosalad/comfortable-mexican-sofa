@@ -86,11 +86,6 @@ class CmsLayout
     nil
   end
 
-  def self.find_by_id(id)
-    return if id.nil?
-    find(id)
-  end
-
   # -- Instance Methods -----------------------------------------------------
   # magical merging tag is {cms:page:content} If parent layout has this tag
   # defined its content will be merged. If no such tag found, parent content
@@ -112,7 +107,7 @@ protected
 
   def check_content_tag_presence
     CmsTag.process_content((test_page = CmsPage.new), content)
-    if test_page.cms_tags.select{|t| t.class.superclass == CmsBlock}.blank?
+    if test_page.cms_tags.select{ |t| t.class.cms_tag_class == CmsBlock }.blank?
       self.errors.add(:content, 'No cms page tags defined')
     end
   end

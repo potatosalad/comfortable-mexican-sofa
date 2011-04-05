@@ -5,7 +5,7 @@ class CmsAdmin::SnippetsController < CmsAdmin::BaseController
   
   def index
     return redirect_to :action => :new if @cms_site.cms_snippets.count == 0
-    @cms_snippets = @cms_site.cms_snippets.all(:order => 'label')
+    @cms_snippets = @cms_site.cms_snippets.order_by([ :label, :asc ]).all
   end
   
   def new

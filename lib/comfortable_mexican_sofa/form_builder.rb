@@ -74,7 +74,7 @@ class ComfortableMexicanSofa::FormBuilder < ActionView::Helpers::FormBuilder
         <div class='value'>
           #{field}
           #{@template.hidden_field_tag('cms_page[cms_blocks_attributes][][label]', tag.label, :id => nil)}
-          #{@template.hidden_field_tag('cms_page[cms_blocks_attributes][][id]', tag.record_id, :id => nil) if tag.record_id}
+          #{@template.hidden_field_tag('cms_page[cms_blocks_attributes][][id]', tag.resource.record_id, :id => nil) if tag.resource.respond_to?(:record_id)}
         </div>
       </div>
     ).html_safe

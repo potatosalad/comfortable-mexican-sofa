@@ -53,7 +53,7 @@ class CmsSnippet
       # FIX: This a bit odd... Snippet is used as a tag, so sometimes there's no site scope
       # being passed. So we're enforcing this only if it's found. Need to review.
       conditions = site ? {:conditions => {:cms_site_id => site.id}} : {}
-      find_by_slug(slug, conditions)
+      where(:slug => slug).find(:first, conditions)
     end || raise(Mongoid::Errors::DocumentNotFound.new(self, slug), "CmsSnippet with slug: #{slug} cannot be found")
   end
 

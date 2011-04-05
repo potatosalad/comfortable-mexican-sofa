@@ -10,15 +10,23 @@ end
   'comfortable_mexican_sofa/view_hooks',
   'comfortable_mexican_sofa/view_methods',
   'comfortable_mexican_sofa/form_builder',
+  'comfortable_mexican_sofa/mongoid/document',
   '../app/models/cms_block',
   '../app/models/cms_snippet',
-  'comfortable_mexican_sofa/cms_tag' 
+  'comfortable_mexican_sofa/cms_tag',
+  'comfortable_mexican_sofa/cms_tag_resource'
 ].each do |path|
   require File.expand_path(path, File.dirname(__FILE__))
 end
 
 Dir.glob(File.expand_path('comfortable_mexican_sofa/cms_tag/*.rb', File.dirname(__FILE__))).each do |tag_path| 
   require tag_path
+end
+
+Mongoid::Document.class_eval do
+  def self.included(base)
+    base.extend ComfortableMexicanSofa::Mongoid::Document
+  end
 end
 
 module ComfortableMexicanSofa

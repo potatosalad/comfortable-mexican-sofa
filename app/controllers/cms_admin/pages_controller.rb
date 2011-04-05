@@ -32,7 +32,7 @@ class CmsAdmin::PagesController < CmsAdmin::BaseController
     @cms_page.save!
     flash[:notice] = 'Page updated'
     redirect_to :action => :edit, :id => @cms_page
-  rescue Mongoid::Errors::Validations
+  rescue Mongoid::Errors::Validations => e
     flash.now[:error] = 'Failed to update page'
     render :action => :edit
   end

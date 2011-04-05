@@ -10,13 +10,13 @@ class CmsBlock
   referenced_in :cms_page
 
   # -- Validations ----------------------------------------------------------
-  validates :label,
-    :presence   => true,
-    :uniqueness => { :scope => :cms_page_id }
+  #validates :label,
+  #  :presence   => true,
+  #  :uniqueness => { :scope => :cms_page_id }
 
   # -- Class Methods --------------------------------------------------------
   def self.initialize_or_find(cms_page, label)
-    if block = cms_page.cms_blocks.detect{ |b| b.label == label.to_s }
+    if block = cms_page.cms_blocks.where(:label => label.to_s).first
       self.new(
         :record_id  => block.id,
         :cms_page   => cms_page,

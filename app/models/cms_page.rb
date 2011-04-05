@@ -96,11 +96,6 @@ class CmsPage
     nil
   end
 
-  def self.find_by_id(id)
-    return if id.nil?
-    find(id)
-  end
-
   # -- Instance Methods -----------------------------------------------------
   # For previewing purposes sometimes we need to have full_path set
   def full_path
@@ -154,7 +149,8 @@ protected
 
   def assign_position
     return unless self.parent
-    max = self.parent.children.maximum(:position)
+    high = self.parent.children.order_by([ :position, :desc ]).first
+    max = high ? high.position : 0
     self.position = max ? max + 1 : 0
   end
 
