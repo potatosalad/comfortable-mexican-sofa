@@ -107,7 +107,7 @@ protected
 
   def check_content_tag_presence
     CmsTag.process_content((test_page = CmsPage.new), content)
-    if test_page.cms_tags.select{ |t| t.class.cms_tag_class == CmsBlock }.blank?
+    if test_page.cms_tags.select{ |t| t.class.respond_to?(:cms_tag_class) ? t.class.cms_tag_class == CmsBlock : false }.blank?
       self.errors.add(:content, 'No cms page tags defined')
     end
   end

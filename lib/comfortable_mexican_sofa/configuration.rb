@@ -32,6 +32,10 @@ class ComfortableMexicanSofa::Configuration
   
   # Override the hostname when looking up which site to use
   attr_accessor :override_host
+
+  attr_accessor :cms_css_path
+
+  attr_accessor :cms_js_path
   
   # Configuration defaults
   def initialize
@@ -45,6 +49,8 @@ class ComfortableMexicanSofa::Configuration
     @enable_caching       = true
     @upload_file_options  = {}
     @override_host        = nil
+    @cms_css_path         = '/stylesheets' #'/cms-css'
+    @cms_js_path          = '/javascripts' #'/cms-js'
   end
   
 end

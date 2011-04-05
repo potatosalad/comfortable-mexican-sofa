@@ -6,7 +6,11 @@ class CmsSite
   field :hostname, :type => String
 
   # -- Relationships --------------------------------------------------------
-  references_many :cms_layouts,  :dependent => :destroy
+  references_many :cms_layouts,  :dependent => :destroy do
+    def find_by_slug(slug)
+      @target.where(:slug => slug).first
+    end
+  end
   references_many :cms_pages,    :dependent => :destroy do
     def find_by_full_path(full_path)
       @target.where(:full_path => full_path).first
