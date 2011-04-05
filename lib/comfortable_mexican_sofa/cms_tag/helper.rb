@@ -10,7 +10,7 @@ class CmsTag::Helper
   end
   
   def content
-    "<%= #{label}(#{params.split(':').collect{|p| "'#{p}'"}.join(', ')}) %>"
+    "<%= #{label}(#{params.split(':').collect{|p| (p[0] == '>') ? ":'#{p[1..-1]}'" : "'#{p}'"}.join(', ')}) %>"
   end
   
 end
