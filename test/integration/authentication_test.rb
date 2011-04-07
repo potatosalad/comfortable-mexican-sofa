@@ -3,7 +3,7 @@ require File.expand_path('../test_helper', File.dirname(__FILE__))
 class AuthenticationTest < ActionDispatch::IntegrationTest
   
   def test_get_with_unauthorized_access
-    assert_equal 'ComfortableMexicanSofa::HttpAuth', ComfortableMexicanSofa.config.authentication
+    assert_equal 'Jangle::HttpAuth', Jangle.config.authentication
     get '/cms-admin/pages'
     assert_response :unauthorized
     get '/'
@@ -16,9 +16,9 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
   end
   
   def test_get_with_changed_default_config
-    assert_equal 'ComfortableMexicanSofa::HttpAuth', ComfortableMexicanSofa.config.authentication
-    ComfortableMexicanSofa::HttpAuth.username = 'newuser'
-    ComfortableMexicanSofa::HttpAuth.password = 'newpass'
+    assert_equal 'Jangle::HttpAuth', Jangle.config.authentication
+    Jangle::HttpAuth.username = 'newuser'
+    Jangle::HttpAuth.password = 'newpass'
     http_auth :get, '/cms-admin/pages'
     assert_response :unauthorized
     http_auth :get, '/cms-admin/pages', {}, 'newuser', 'newpass'

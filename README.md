@@ -1,7 +1,7 @@
-ComfortableMexicanSofa (MicroCMS)
+Jangle (MicroCMS)
 =================================
 
-ComfortableMexicanSofa is a tiny and powerful micro CMS for your Rails 3 application. This CMS is a plugin for your application, not the other way around. Implemented as an Engine so installation is no different than for any other plugin out there.
+Jangle is a tiny and powerful micro CMS for your Rails 3 application. This CMS is a plugin for your application, not the other way around. Implemented as an Engine so installation is no different than for any other plugin out there.
 
 Installation
 ------------
@@ -89,7 +89,7 @@ Sofa is able to manage multiple sites from the same application. For instance: '
     
 Integrating CMS with your app
 -----------------------------
-ComfortableMexicanSofa is a plugin, so it allows you to easily access content it manages. Here's some things you can do.
+Jangle is a plugin, so it allows you to easily access content it manages. Here's some things you can do.
 
 You can use your existing application layout. When creating CMS layouts there's an option to use an application layout. Suddenly all CMS pages using that layout will be rendered through <%= yield %> of your application layout.
 
@@ -109,7 +109,7 @@ You can access **Page** or **Field** tag content directly from your application 
     cms_page_content(:page_or_field_label)
     
     # anywhere else
-    cms_page_content(:page_or_field_label, CmsPage.find_by_slug(...))
+    cms_page_content(:page_or_field_label, Jangle::Page.find_by_slug(...))
     
 Similarly you can access **Snippet** content:
     
@@ -128,9 +128,9 @@ If you wish, you can re-use Sofa's admin area for things you need to administer 
     
 From your views you can use `cms_form_for` method to re-use Sofa's FormBuilder. There are also some existing styles for tables, will\_paginate helpers, etc. Take a look in [/public/stylesheets/comfortable\_mexican\_sofa/content.css](https://github.com/twg/comfortable-mexican-sofa/blob/master/public/stylesheets/comfortable_mexican_sofa/content.css)
 
-You will probably want to add a navigation link on the left side, and for that you will want to use ViewHook functionality. Create a partial that has a link to your admin area and declare in in Sofa's initializer: `ComfortableMexicanSofa::ViewHooks.add(:navigation, '/admin/navigation')`. Similarly you can add extra stylesheets, etc into admin area in the same way.
+You will probably want to add a navigation link on the left side, and for that you will want to use ViewHook functionality. Create a partial that has a link to your admin area and declare in in Sofa's initializer: `Jangle::ViewHooks.add(:navigation, '/admin/navigation')`. Similarly you can add extra stylesheets, etc into admin area in the same way.
     
-Do you have other authentication system in place (like Devise, AuthLogic, etc) and wish to use that? For that, you will need to create a module that does the authentication check and make ComfortableMexicanSofa use it. For example:
+Do you have other authentication system in place (like Devise, AuthLogic, etc) and wish to use that? For that, you will need to create a module that does the authentication check and make Jangle use it. For example:
     
     module CmsDeviseAuth
       def authenticate
@@ -144,12 +144,12 @@ You can put this module in /config/initializers/comfortable\_mexican\_sofa.rb an
 
 Working with seeds
 ------------------
-ComfortableMexicanSofa has seeds, functionality that helps manage content during development phase. It's very different from Rails seeds as Sofa's seeds are loaded with each page load. The database is completely bypassed when seeds are active. This way, you can source-control content before going live, disabling seeds and dumping everything into the database.
+Jangle has seeds, functionality that helps manage content during development phase. It's very different from Rails seeds as Sofa's seeds are loaded with each page load. The database is completely bypassed when seeds are active. This way, you can source-control content before going live, disabling seeds and dumping everything into the database.
 
 First, you will need to set a path where fixture files will be found (inside Sofa's initializer):
     
     if Rails.env.development? || Rails.env.test?
-      ComfortableMexicanSofa.config.seed_data_path = File.expand_path('db/cms_seeds', Rails.root)
+      Jangle.config.seed_data_path = File.expand_path('db/cms_seeds', Rails.root)
     end
     
 If you ran `rails g cms`, you should find an example set of seeds in /db/cms\_seeds directory. Please note that seeds are nested in the folder that is the hostname of your site. Each file is an YAML representation of a database entry for that layout/page/snippet.
@@ -164,13 +164,13 @@ There's a rake task that makes moving seeds into database (and vice-versa) easy:
     
 Active Components
 -----------------
-ComfortableMexicanSofa utilizes the following:
+Jangle utilizes the following:
 
 * **[https://github.com/rails/rails](https://github.com/rails/rails)** - Ruby on Rails 3.*, of course
 * **[https://github.com/thoughtbot/paperclip](https://github.com/thoughtbot/paperclip)** - Paperclip to handle file uploads
 * **[https://github.com/twg/active_link_to](https://github.com/twg/active_link_to)** - Easy method to handle logic behind 'active' links
 
-Contributing to ComfortableMexicanSofa
+Contributing to Jangle
 --------------------------------------
 
 * Fork the project
@@ -180,6 +180,6 @@ Contributing to ComfortableMexicanSofa
 
 ![Looks pretty comfortable to me. No idea what makes it Mexican.](https://github.com/twg/comfortable-mexican-sofa/raw/master/doc/sofa.png)
 
-ComfortableMexicanSofa is released under the [MIT license](https://github.com/twg/comfortable-mexican-sofa/raw/master/LICENSE) 
+Jangle is released under the [MIT license](https://github.com/twg/comfortable-mexican-sofa/raw/master/LICENSE) 
 
 Copyright 2009-2011 Oleg Khabarov, [The Working Group Inc](http://www.twg.ca)

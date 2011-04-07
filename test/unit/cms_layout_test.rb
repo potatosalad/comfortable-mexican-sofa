@@ -1,24 +1,24 @@
 require File.expand_path('../test_helper', File.dirname(__FILE__))
 
-class CmsLayoutTest < ActiveSupport::TestCase
+class Jangle::LayoutTest < ActiveSupport::TestCase
   
   def test_fixtures_validity
-    CmsLayout.all.each do |layout|
+    Jangle::Layout.all.each do |layout|
       assert layout.valid?, layout.errors.full_messages.to_s
     end
   end
   
   def test_validations
-    layout = CmsLayout.create
+    layout = Jangle::Layout.create
     assert layout.errors.present?
     assert_has_errors_on layout, [:label, :slug, :content]
   end
   
   def test_validation_of_tag_presence
-    layout = CmsLayout.create(:content => 'some text')
+    layout = Jangle::Layout.create(:content => 'some text')
     assert_has_errors_on layout, :content
     
-    layout = CmsLayout.create(:content => '{cms:snippet:blah}')
+    layout = Jangle::Layout.create(:content => '{cms:snippet:blah}')
     assert_has_errors_on layout, :content
     
     layout = cms_sites(:default).cms_layouts.new(
@@ -37,7 +37,7 @@ class CmsLayoutTest < ActiveSupport::TestCase
   end
   
   def test_creation
-    assert_difference 'CmsLayout.count' do
+    assert_difference 'Jangle::Layout.count' do
       layout = cms_sites(:default).cms_layouts.create(
         :label    => 'New Layout',
         :slug     => 'new-layout',
@@ -55,15 +55,15 @@ class CmsLayoutTest < ActiveSupport::TestCase
   
   def test_options_for_select
     assert_equal ['Default Layout', 'Nested Layout', '. . Child Layout'],
-      CmsLayout.options_for_select(cms_sites(:default)).collect{|t| t.first}
+      Jangle::Layout.options_for_select(cms_sites(:default)).collect{|t| t.first}
     assert_equal ['Default Layout', 'Nested Layout'],
-      CmsLayout.options_for_select(cms_sites(:default), cms_layouts(:child)).collect{|t| t.first}
+      Jangle::Layout.options_for_select(cms_sites(:default), cms_layouts(:child)).collect{|t| t.first}
     assert_equal ['Default Layout'],
-      CmsLayout.options_for_select(cms_sites(:default), cms_layouts(:nested)).collect{|t| t.first}
+      Jangle::Layout.options_for_select(cms_sites(:default), cms_layouts(:nested)).collect{|t| t.first}
   end
   
   def test_app_layouts_for_select
-    assert_equal ['cms_admin.html.erb'], CmsLayout.app_layouts_for_select
+    assert_equal ['jangle.html.erb'], Jangle::Layout.app_layouts_for_select
   end
   
   def test_merged_content_with_same_child_content
@@ -85,53 +85,53 @@ class CmsLayoutTest < ActiveSupport::TestCase
   end
   
   def test_load_from_file
-    assert !CmsLayout.load_from_file(cms_sites(:default), 'default')
+    assert !Jangle::Layout.load_from_file(cms_sites(:default), 'default')
     
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
     
-    assert !CmsLayout.load_from_file(cms_sites(:default), 'bogus')
+    assert !Jangle::Layout.load_from_file(cms_sites(:default), 'bogus')
     
-    assert layout = CmsLayout.load_from_file(cms_sites(:default), 'default')
+    assert layout = Jangle::Layout.load_from_file(cms_sites(:default), 'default')
     assert_equal 'Default Layout', layout.label
     assert_equal '<html>{{cms:page:content}}</html>', layout.content
     
-    assert layout = CmsLayout.load_from_file(cms_sites(:default), 'nested')
+    assert layout = Jangle::Layout.load_from_file(cms_sites(:default), 'nested')
     assert_equal 'Nested Layout', layout.label
     assert_equal '<div>{{cms:page:content}}</div>', layout.content
     assert_equal '<html><div>{{cms:page:content}}</div></html>', layout.merged_content
   end
   
   def test_load_from_file_broken
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
-    error_message = "Failed to load from #{ComfortableMexicanSofa.configuration.seed_data_path}/test.host/layouts/broken.yml"
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    error_message = "Failed to load from #{Jangle.configuration.seed_data_path}/test.host/layouts/broken.yml"
     assert_exception_raised RuntimeError, error_message do
-      CmsLayout.load_from_file(cms_sites(:default), 'broken')
+      Jangle::Layout.load_from_file(cms_sites(:default), 'broken')
     end
   end
   
   def test_load_for_slug
-    assert layout = CmsLayout.load_for_slug!(cms_sites(:default), 'default')
+    assert layout = Jangle::Layout.load_for_slug!(cms_sites(:default), 'default')
     assert !layout.new_record?
     db_content = layout.content
     
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
-    assert layout = CmsLayout.load_for_slug!(cms_sites(:default), 'default')
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    assert layout = Jangle::Layout.load_for_slug!(cms_sites(:default), 'default')
     assert layout.new_record?
     file_content = layout.content
     assert_not_equal db_content, file_content
   end
   
   def test_load_for_slug_exceptions
-    assert_exception_raised ActiveRecord::RecordNotFound, 'CmsLayout with slug: not_found cannot be found' do
-      CmsLayout.load_for_slug!(cms_sites(:default), 'not_found')
+    assert_exception_raised ActiveRecord::RecordNotFound, 'Jangle::Layout with slug: not_found cannot be found' do
+      Jangle::Layout.load_for_slug!(cms_sites(:default), 'not_found')
     end
-    assert !CmsLayout.load_for_slug(cms_sites(:default), 'not_found')
+    assert !Jangle::Layout.load_for_slug(cms_sites(:default), 'not_found')
     
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
-    assert_exception_raised ActiveRecord::RecordNotFound, 'CmsLayout with slug: not_found cannot be found' do
-      CmsLayout.load_for_slug!(cms_sites(:default), 'not_found')
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    assert_exception_raised ActiveRecord::RecordNotFound, 'Jangle::Layout with slug: not_found cannot be found' do
+      Jangle::Layout.load_for_slug!(cms_sites(:default), 'not_found')
     end
-    assert !CmsLayout.load_for_slug(cms_sites(:default), 'not_found')
+    assert !Jangle::Layout.load_for_slug(cms_sites(:default), 'not_found')
   end
   
   def test_update_forces_page_content_reload

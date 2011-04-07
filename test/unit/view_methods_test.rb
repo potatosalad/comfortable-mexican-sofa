@@ -2,7 +2,7 @@ require File.expand_path('../test_helper', File.dirname(__FILE__))
 
 class ViewMethodsTest < ActiveSupport::TestCase
   
-  include ComfortableMexicanSofa::ViewMethods
+  include Jangle::ViewMethods
   
   def test_cms_snippet_content
     assert_equal 'default_snippet_content', cms_snippet_content('default')

@@ -10,7 +10,7 @@ class CmsAdmin::SnippetsControllerTest < ActionController::TestCase
   end
   
   def test_get_index_with_no_snippets
-    CmsSnippet.delete_all
+    Jangle::Snippet.delete_all
     get :index
     assert_response :redirect
     assert_redirected_to :action => :new
@@ -41,14 +41,14 @@ class CmsAdmin::SnippetsControllerTest < ActionController::TestCase
   end
   
   def test_creation
-    assert_difference 'CmsSnippet.count' do
+    assert_difference 'Jangle::Snippet.count' do
       post :create, :cms_snippet => {
         :label    => 'Test Snippet',
         :slug     => 'test-snippet',
         :content  => 'Test Content'
       }
       assert_response :redirect
-      snippet = CmsSnippet.last
+      snippet = Jangle::Snippet.last
       assert_equal cms_sites(:default), snippet.cms_site
       assert_redirected_to :action => :edit, :id => snippet
       assert_equal 'Snippet created', flash[:notice]
@@ -56,7 +56,7 @@ class CmsAdmin::SnippetsControllerTest < ActionController::TestCase
   end
   
   def test_creation_failure
-    assert_no_difference 'CmsSnippet.count' do
+    assert_no_difference 'Jangle::Snippet.count' do
       post :create, :cms_snippet => { }
       assert_response :success
       assert_template :new
@@ -91,7 +91,7 @@ class CmsAdmin::SnippetsControllerTest < ActionController::TestCase
   end
   
   def test_destroy
-    assert_difference 'CmsSnippet.count', -1 do
+    assert_difference 'Jangle::Snippet.count', -1 do
       delete :destroy, :id => cms_snippets(:default)
       assert_response :redirect
       assert_redirected_to :action => :index

@@ -1,16 +1,16 @@
 require File.expand_path('../test_helper', File.dirname(__FILE__))
 
-class CmsBlockTest < ActiveSupport::TestCase
+class Jangle::BlockTest < ActiveSupport::TestCase
   
   def test_fixtures_validity
-    CmsBlock.all.each do |block|
+    Jangle::Block.all.each do |block|
       assert block.valid?, block.errors.full_messages.to_s
     end
   end
   
   def test_new_via_page_nested_attributes
-    assert_difference ['CmsPage.count', 'CmsBlock.count'] do
-      page = CmsPage.create!(
+    assert_difference ['Jangle::Page.count', 'Jangle::Block.count'] do
+      page = Jangle::Page.create!(
         :cms_site   => cms_sites(:default),
         :cms_layout => cms_layouts(:default),
         :label      => 'test page',

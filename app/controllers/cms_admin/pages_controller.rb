@@ -44,7 +44,7 @@ class CmsAdmin::PagesController < CmsAdmin::BaseController
   end
   
   def form_blocks
-    @cms_page = @cms_site.cms_pages.find_by_id(params[:id]) || CmsPage.new
+    @cms_page = @cms_site.cms_pages.find_by_id(params[:id]) || Jangle::Page.new
     @cms_page.cms_layout = @cms_site.cms_layouts.find_by_id(params[:layout_id])
   end
   
@@ -59,7 +59,7 @@ class CmsAdmin::PagesController < CmsAdmin::BaseController
   
   def reorder
     (params[:cms_page] || []).each_with_index do |id, index|
-      if (cms_page = CmsPage.find_by_id(id))
+      if (cms_page = Jangle::Page.find_by_id(id))
         cms_page.update_attribute(:position, index)
       end
     end
@@ -69,20 +69,20 @@ class CmsAdmin::PagesController < CmsAdmin::BaseController
 protected
 
   def check_for_layouts
-    if CmsLayout.count == 0
+    if Jangle::Layout.count == 0
       flash[:error] = 'No Layouts found. Please create one.'
-      redirect_to new_cms_admin_layout_path
+      redirect_to new_jangle_layout_path
     end
   end
   
   def build_cms_page
     @cms_page = @cms_site.cms_pages.new(params[:cms_page])
-    @cms_page.parent ||= (CmsPage.find_by_id(params[:parent_id]) || @cms_site.cms_pages.root)
+    @cms_page.parent ||= (Jangle::Page.find_by_id(params[:parent_id]) || @cms_site.cms_pages.root)
     @cms_page.cms_layout ||= (@cms_page.parent && @cms_page.parent.cms_layout || @cms_site.cms_layouts.first)
   end
   
   def build_upload_file
-    @upload = CmsUpload.new
+    @upload = Jangle::Upload.new
   end
   
   def load_cms_page

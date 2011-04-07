@@ -89,7 +89,7 @@ class CmsTagTest < ActiveSupport::TestCase
   end
   
   def test_content_for_new_page
-    page = CmsPage.new
+    page = Jangle::Page.new
     assert page.cms_blocks.blank?
     assert page.cms_tags.blank?
     assert_equal '', page.content
@@ -97,7 +97,7 @@ class CmsTagTest < ActiveSupport::TestCase
   end
   
   def test_content_for_new_page_with_layout
-    page = CmsPage.new(:cms_layout => cms_layouts(:default))
+    page = Jangle::Page.new(:cms_layout => cms_layouts(:default))
     assert page.cms_blocks.blank?
     assert page.cms_tags.blank?
     assert_equal rendered_content_formatter(
@@ -116,7 +116,7 @@ class CmsTagTest < ActiveSupport::TestCase
   end
   
   def test_content_for_new_page_with_initilized_cms_blocks
-    page = CmsPage.new(:cms_layout => cms_layouts(:default))
+    page = Jangle::Page.new(:cms_layout => cms_layouts(:default))
     assert page.cms_blocks.blank?
     assert page.cms_tags.blank?
     page.cms_blocks_attributes = [

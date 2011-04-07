@@ -4,7 +4,7 @@ class CmsContentController < ApplicationController
   before_filter :load_cms_page,   :only => :render_html
   before_filter :load_cms_layout, :only => [:render_css, :render_js]
   
-  caches_page :render_css, :render_js, :if => Proc.new { |c| ComfortableMexicanSofa.config.enable_caching }
+  caches_page :render_css, :render_js, :if => Proc.new { |c| Jangle.config.enable_caching }
   
   def render_html(status = 200)
     layout = @cms_page.cms_layout.app_layout.blank?? false : @cms_page.cms_layout.app_layout
@@ -22,17 +22,17 @@ class CmsContentController < ApplicationController
 protected
   
   def load_cms_site
-    @cms_site = CmsSite.find_by_hostname!(ComfortableMexicanSofa.config.override_host || request.host.downcase)
+    @cms_site = Jangle::Site.find_by_hostname!(Jangle.config.override_host || request.host.downcase)
   rescue Mongoid::Errors::DocumentNotFound
     render :text => 'Site Not Found', :status => 404
   end
   
   def load_cms_page
-    @cms_page = CmsPage.published.load_for_full_path!(@cms_site, "/#{params[:cms_path]}")
+    @cms_page = Jangle::Page.published.load_for_full_path!(@cms_site, "/#{params[:cms_path]}")
     return redirect_to(@cms_page.target_page.full_path) if @cms_page.target_page
     
   rescue Mongoid::Errors::DocumentNotFound
-    if @cms_page = CmsPage.published.load_for_full_path(@cms_site, '/404')
+    if @cms_page = Jangle::Page.published.load_for_full_path(@cms_site, '/404')
       render_html(404)
     else
       render :text => 'Page Not Found', :status => 404
@@ -40,7 +40,7 @@ protected
   end
   
   def load_cms_layout
-    @cms_layout = CmsLayout.load_for_slug!(@cms_site, params[:id])
+    @cms_layout = Jangle::Layout.load_for_slug!(@cms_site, params[:id])
   rescue Mongoid::Errors::DocumentNotFound
     render :nothing => true, :status => 404
   end

@@ -6,7 +6,7 @@ class RenderCmsSeedTest < ActionDispatch::IntegrationTest
     get '/child/subchild'
     assert_response 404
     
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
     
     get '/child/subchild'
     assert_response :success
@@ -14,7 +14,7 @@ class RenderCmsSeedTest < ActionDispatch::IntegrationTest
   end
   
   def test_get_seed_data_page
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
     
     get '/'
     assert_response :success
@@ -23,7 +23,7 @@ class RenderCmsSeedTest < ActionDispatch::IntegrationTest
   end
   
   def test_get_seed_data_css
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
     
     get '/cms-css/default'
     assert_response :success

@@ -1,16 +1,16 @@
 require File.expand_path('../test_helper', File.dirname(__FILE__))
 
-class CmsPageTest < ActiveSupport::TestCase
+class Jangle::PageTest < ActiveSupport::TestCase
   
   def test_fixtures_validity
-    CmsPage.all.each do |page|
+    Jangle::Page.all.each do |page|
       assert page.valid?, page.errors.full_messages.to_s
       assert_equal page.read_attribute(:content), page.content(true)
     end
   end
   
   def test_validations
-    page = CmsPage.new
+    page = Jangle::Page.new
     page.save
     assert page.invalid?
     assert_has_errors_on page, [:cms_layout, :slug, :label]
@@ -45,7 +45,7 @@ class CmsPageTest < ActiveSupport::TestCase
   end
   
   def test_creation
-    assert_difference ['CmsPage.count', 'CmsBlock.count'] do
+    assert_difference ['Jangle::Page.count', 'Jangle::Block.count'] do
       page = cms_sites(:default).cms_pages.create!(
         :label          => 'test',
         :slug           => 'test',
@@ -62,10 +62,10 @@ class CmsPageTest < ActiveSupport::TestCase
   end
   
   def test_initialization_of_full_path
-    page = CmsPage.new
+    page = Jangle::Page.new
     assert_equal '/', page.full_path
     
-    page = CmsPage.new(new_params)
+    page = Jangle::Page.new(new_params)
     assert page.invalid?
     assert_has_errors_on page, :cms_site_id
     
@@ -77,7 +77,7 @@ class CmsPageTest < ActiveSupport::TestCase
     assert page.valid?
     assert_equal '/child-page/test-page', page.full_path
     
-    CmsPage.destroy_all
+    Jangle::Page.destroy_all
     page = cms_sites(:default).cms_pages.new(new_params)
     assert page.valid?
     assert_equal '/', page.full_path
@@ -134,43 +134,43 @@ class CmsPageTest < ActiveSupport::TestCase
   end
   
   def test_cascading_destroy
-    assert_difference 'CmsPage.count', -2 do
+    assert_difference 'Jangle::Page.count', -2 do
       cms_pages(:default).destroy
     end
   end
   
   def test_options_for_select
     assert_equal ['Default Page', '. . Child Page'], 
-      CmsPage.options_for_select(cms_sites(:default)).collect{|t| t.first }
+      Jangle::Page.options_for_select(cms_sites(:default)).collect{|t| t.first }
     assert_equal ['Default Page'], 
-      CmsPage.options_for_select(cms_sites(:default), cms_pages(:child)).collect{|t| t.first }
+      Jangle::Page.options_for_select(cms_sites(:default), cms_pages(:child)).collect{|t| t.first }
     assert_equal [], 
-      CmsPage.options_for_select(cms_sites(:default), cms_pages(:default))
+      Jangle::Page.options_for_select(cms_sites(:default), cms_pages(:default))
     
-    page = CmsPage.new(new_params(:parent => cms_pages(:default)))
+    page = Jangle::Page.new(new_params(:parent => cms_pages(:default)))
     assert_equal ['Default Page', '. . Child Page'],
-      CmsPage.options_for_select(cms_sites(:default), page).collect{|t| t.first }
+      Jangle::Page.options_for_select(cms_sites(:default), page).collect{|t| t.first }
   end
   
   def test_load_from_file
-    assert !CmsPage.load_from_file(cms_sites(:default), '/')
+    assert !Jangle::Page.load_from_file(cms_sites(:default), '/')
     
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
     
-    assert !CmsPage.load_from_file(cms_sites(:default), '/bogus')
+    assert !Jangle::Page.load_from_file(cms_sites(:default), '/bogus')
     
-    assert page = CmsPage.load_from_file(cms_sites(:default), '/')
+    assert page = Jangle::Page.load_from_file(cms_sites(:default), '/')
     assert_equal 'Default Page', page.label
     assert_equal 1, page.cms_blocks.size
     assert page.cms_layout
     assert_equal '<html>Default Page Content</html>', page.content
     
-    assert page = CmsPage.load_from_file(cms_sites(:default), '/child')
+    assert page = Jangle::Page.load_from_file(cms_sites(:default), '/child')
     assert_equal 1, page.cms_blocks.size
     assert page.cms_layout
     assert_equal '<html>Child Page Content</html>', page.content
     
-    assert page = CmsPage.load_from_file(cms_sites(:default), '/child/subchild')
+    assert page = Jangle::Page.load_from_file(cms_sites(:default), '/child/subchild')
     assert_equal 1, page.cms_blocks.size
     assert page.cms_layout
     assert_equal 'Nested Layout', page.cms_layout.label
@@ -178,36 +178,36 @@ class CmsPageTest < ActiveSupport::TestCase
   end
   
   def test_load_from_file_broken
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
-    error_message = "Failed to load from #{ComfortableMexicanSofa.configuration.seed_data_path}/test.host/pages/broken.yml"
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    error_message = "Failed to load from #{Jangle.configuration.seed_data_path}/test.host/pages/broken.yml"
     assert_exception_raised RuntimeError, error_message do
-      CmsPage.load_from_file(cms_sites(:default), '/broken')
+      Jangle::Page.load_from_file(cms_sites(:default), '/broken')
     end
   end
   
   def test_load_for_full_path
-    assert page = CmsPage.load_for_full_path!(cms_sites(:default), '/')
+    assert page = Jangle::Page.load_for_full_path!(cms_sites(:default), '/')
     assert !page.new_record?
     db_content = page.content
     
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
-    assert page = CmsPage.load_for_full_path!(cms_sites(:default), '/')
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    assert page = Jangle::Page.load_for_full_path!(cms_sites(:default), '/')
     assert page.new_record?
     file_content = page.content
     assert_not_equal db_content, file_content
   end
   
   def test_load_for_full_path_exceptions
-    assert_exception_raised ActiveRecord::RecordNotFound, 'CmsPage with path: /invalid_page cannot be found' do
-      CmsPage.load_for_full_path!(cms_sites(:default), '/invalid_page')
+    assert_exception_raised ActiveRecord::RecordNotFound, 'Jangle::Page with path: /invalid_page cannot be found' do
+      Jangle::Page.load_for_full_path!(cms_sites(:default), '/invalid_page')
     end
-    assert !CmsPage.load_for_full_path(cms_sites(:default), '/invalid_page')
+    assert !Jangle::Page.load_for_full_path(cms_sites(:default), '/invalid_page')
     
-    ComfortableMexicanSofa.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
-    assert_exception_raised ActiveRecord::RecordNotFound, 'CmsPage with path: /invalid_page cannot be found' do
-      CmsPage.load_for_full_path!(cms_sites(:default), '/invalid_page')
+    Jangle.configuration.seed_data_path = File.expand_path('../cms_seeds', File.dirname(__FILE__))
+    assert_exception_raised ActiveRecord::RecordNotFound, 'Jangle::Page with path: /invalid_page cannot be found' do
+      Jangle::Page.load_for_full_path!(cms_sites(:default), '/invalid_page')
     end
-    assert !CmsPage.load_for_full_path(cms_sites(:default), '/invalid_page')
+    assert !Jangle::Page.load_for_full_path(cms_sites(:default), '/invalid_page')
   end
   
   def test_cms_blocks_attributes_accessor
@@ -230,9 +230,9 @@ class CmsPageTest < ActiveSupport::TestCase
   end
   
   def test_scope_published
-    assert_equal 2, CmsPage.published.count
+    assert_equal 2, Jangle::Page.published.count
     cms_pages(:child).update_attribute(:is_published, false)
-    assert_equal 1, CmsPage.published.count
+    assert_equal 1, Jangle::Page.published.count
   end
   
   def test_root?

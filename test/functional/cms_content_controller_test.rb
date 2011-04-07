@@ -19,7 +19,7 @@ class CmsContentControllerTest < ActionController::TestCase
   end
   
   def test_render_page_with_app_layout
-    cms_layouts(:default).update_attribute(:app_layout, 'cms_admin.html.erb')
+    cms_layouts(:default).update_attribute(:app_layout, 'jangle.html.erb')
     get :render_html, :cms_path => ''
     assert_response :success
     assert_select "body[class='c_cms_content a_render_html']"
@@ -68,7 +68,7 @@ class CmsContentControllerTest < ActionController::TestCase
   end
   
   def test_render_page_with_irb_disabled
-    assert ComfortableMexicanSofa.config.disable_irb
+    assert Jangle.config.disable_irb
     
     irb_page = cms_sites(:default).cms_pages.create!(
       :label          => 'irb',
@@ -87,7 +87,7 @@ class CmsContentControllerTest < ActionController::TestCase
   end
   
   def test_render_page_with_irb_enabled
-    ComfortableMexicanSofa.config.disable_irb = false
+    Jangle.config.disable_irb = false
     
     irb_page = cms_sites(:default).cms_pages.create!(
       :label          => 'irb',

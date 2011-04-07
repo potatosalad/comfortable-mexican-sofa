@@ -10,7 +10,7 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   end
   
   def test_get_index_with_no_pages
-    CmsPage.delete_all
+    Jangle::Page.delete_all
     get :index
     assert_response :redirect
     assert_redirected_to :action => :new
@@ -125,8 +125,8 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   end
   
   def test_creation
-    assert_difference 'CmsPage.count' do
-      assert_difference 'CmsBlock.count', 2 do
+    assert_difference 'Jangle::Page.count' do
+      assert_difference 'Jangle::Block.count', 2 do
         post :create, :cms_page => {
           :label          => 'Test Page',
           :slug           => 'test-page',
@@ -140,7 +140,7 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
           ]
         }
         assert_response :redirect
-        page = CmsPage.last
+        page = Jangle::Page.last
         assert_equal cms_sites(:default), page.cms_site
         assert_redirected_to :action => :edit, :id => page
         assert_equal 'Page saved', flash[:notice]
@@ -149,7 +149,7 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   end
   
   def test_creation_failure
-    assert_no_difference ['CmsPage.count', 'CmsBlock.count'] do
+    assert_no_difference ['Jangle::Page.count', 'Jangle::Block.count'] do
       post :create, :cms_page => {
         :cms_layout_id  => cms_layouts(:default).id,
         :cms_blocks_attributes => [
@@ -170,7 +170,7 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   
   def test_update
     page = cms_pages(:default)
-    assert_no_difference 'CmsBlock.count' do
+    assert_no_difference 'Jangle::Block.count' do
       put :update, :id => page, :cms_page => {
         :label => 'Updated Label'
       }
@@ -184,7 +184,7 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   
   def test_update_with_layout_change
     page = cms_pages(:default)
-    assert_difference 'CmsBlock.count', 1 do
+    assert_difference 'Jangle::Block.count', 1 do
       put :update, :id => page, :cms_page => {
         :label => 'Updated Label',
         :cms_layout_id => cms_layouts(:nested).id,
@@ -216,8 +216,8 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   end
   
   def test_destroy
-    assert_difference 'CmsPage.count', -2 do
-      assert_difference 'CmsBlock.count', -2 do
+    assert_difference 'Jangle::Page.count', -2 do
+      assert_difference 'Jangle::Block.count', -2 do
         delete :destroy, :id => cms_pages(:default)
         assert_response :redirect
         assert_redirected_to :action => :index
@@ -249,7 +249,7 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   end
   
   def test_creation_preview
-    assert_no_difference 'CmsPage.count' do
+    assert_no_difference 'Jangle::Page.count' do
       post :create, :preview => 'Preview', :cms_page => {
         :label          => 'Test Page',
         :slug           => 'test-page',
@@ -267,7 +267,7 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   
   def test_update_preview
     page = cms_pages(:default)
-    assert_no_difference 'CmsPage.count' do
+    assert_no_difference 'Jangle::Page.count' do
       put :update, :preview => 'Preview', :id => page, :cms_page => {
         :label => 'Updated Label',
         :cms_blocks_attributes => [
@@ -284,19 +284,19 @@ class CmsAdmin::PagesControllerTest < ActionController::TestCase
   end
   
   def test_get_new_with_no_layout
-    CmsLayout.destroy_all
+    Jangle::Layout.destroy_all
     get :new
     assert_response :redirect
-    assert_redirected_to new_cms_admin_layout_path
+    assert_redirected_to new_jangle_layout_path
     assert_equal 'No Layouts found. Please create one.', flash[:error]
   end
   
   def test_get_edit_with_no_layout
-    CmsLayout.destroy_all
+    Jangle::Layout.destroy_all
     page = cms_pages(:default)
     get :edit, :id => page
     assert_response :redirect
-    assert_redirected_to new_cms_admin_layout_path
+    assert_redirected_to new_jangle_layout_path
     assert_equal 'No Layouts found. Please create one.', flash[:error]
   end
   

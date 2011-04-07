@@ -13,8 +13,8 @@ namespace :comfortable_mexican_sofa do
       @from       = args[:from].present?? args[:from] : nil
       @site       = args[:to].present?? args[:to] : nil
       @seed_path  = 
-        ComfortableMexicanSofa.config.seed_data_path = 
-        (args[:seed_path].present?? args[:seed_path] : nil) || ComfortableMexicanSofa.config.seed_data_path
+        Jangle.config.seed_data_path = 
+        (args[:seed_path].present?? args[:seed_path] : nil) || Jangle.config.seed_data_path
       
       if !@seed_path
         abort 'SEED_PATH is not set. Please define where cms fixtures are located.'
@@ -22,7 +22,7 @@ namespace :comfortable_mexican_sofa do
       unless File.exists?((@from && @seed_path = "#{@seed_path}/#{@from}").to_s)
         abort "FROM is not properly set. Cannot find fixtures in '#{@seed_path}'"
       end
-      if !(@site = CmsSite.find_by_hostname(args[:to]))
+      if !(@site = Jangle::Site.find_by_hostname(args[:to]))
         abort "TO is not properly set. Cannot find site with hostname '#{args[:to]}'"
       end
       
@@ -44,7 +44,7 @@ namespace :comfortable_mexican_sofa do
           nil
         end
       end.compact
-      CmsLayout.connection.transaction do
+      Jangle::Layout.connection.transaction do
         # Fixtures are not ordered in any particular way. Saving order matters,
         # so we cycle them until there nothing left to save
         while layouts.present?
@@ -87,7 +87,7 @@ namespace :comfortable_mexican_sofa do
           nil
         end
       end.compact
-      CmsPage.connection.transaction do
+      Jangle::Page.connection.transaction do
         # Fixtures are not ordered in any particular way. Saving order matters,
         # so we cycle them until there nothing left to save
         while pages.present?
@@ -140,7 +140,7 @@ namespace :comfortable_mexican_sofa do
           nil
         end
       end.compact
-      CmsSnippet.connection.transaction do
+      Jangle::Snippet.connection.transaction do
         snippets.each do |snippet|
           should_write      = true
           existing_snippet  = nil
@@ -175,13 +175,13 @@ namespace :comfortable_mexican_sofa do
       @site       = args[:from].present?? args[:from] : nil
       @to         = args[:to].present?? args[:to] : nil
       @seed_path  = 
-        ComfortableMexicanSofa.config.seed_data_path = 
-        (args[:seed_path].present?? args[:seed_path] : nil) || ComfortableMexicanSofa.config.seed_data_path
+        Jangle.config.seed_data_path = 
+        (args[:seed_path].present?? args[:seed_path] : nil) || Jangle.config.seed_data_path
       
       if !@seed_path
         abort 'SEED_PATH is not set. Please define where cms fixtures are located.'
       end
-      if !(@site = CmsSite.find_by_hostname(args[:from]))
+      if !(@site = Jangle::Site.find_by_hostname(args[:from]))
         abort "FROM is not properly set. Cannot find site with hostname '#{args[:from]}'"
       end
       unless @to && @seed_path = "#{@seed_path}/#{@to}"
@@ -200,7 +200,7 @@ namespace :comfortable_mexican_sofa do
     task :layouts => [:environment, :check_for_requirements] do |task, args|
       puts 'Exporting Layouts'
       puts '-----------------'
-      CmsLayout.all.each do |layout|
+      Jangle::Layout.all.each do |layout|
         should_write = true
         file_path = File.join(@seed_path, 'layouts', "#{layout.slug}.yml")
         if File.exists?(file_path)
@@ -224,7 +224,7 @@ namespace :comfortable_mexican_sofa do
     task :pages => [:environment, :check_for_requirements] do |task, args|
       puts 'Exporting Pages'
       puts '---------------'
-      CmsPage.all.each do |page|
+      Jangle::Page.all.each do |page|
         should_write = true
         page_name = page.full_path.split('/').last || 'index'
         page_path = (p = page.full_path.split('/')) && p.pop && p.join('/')
@@ -258,7 +258,7 @@ namespace :comfortable_mexican_sofa do
     task :snippets => [:environment, :check_for_requirements] do |task, args|
       puts 'Exporting Snippets'
       puts '------------------'
-      CmsSnippet.all.each do |snippet|
+      Jangle::Snippet.all.each do |snippet|
         should_write = true
         file_path = File.join(@seed_path, 'snippets', "#{snippet.slug}.yml")
         if File.exists?(file_path)

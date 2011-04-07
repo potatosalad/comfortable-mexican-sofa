@@ -13,9 +13,9 @@ class ActiveSupport::TestCase
   
   # resetting default configuration
   def reset_config
-    ComfortableMexicanSofa.configure do |config|
-      config.cms_title            = 'ComfortableMexicanSofa MicroCMS'
-      config.authentication       = 'ComfortableMexicanSofa::HttpAuth'
+    Jangle.configure do |config|
+      config.cms_title            = 'Jangle MicroCMS'
+      config.authentication       = 'Jangle::HttpAuth'
       config.seed_data_path       = nil
       config.admin_route_prefix   = 'cms-admin'
       config.admin_route_redirect = "/cms-admin/pages"
@@ -23,8 +23,8 @@ class ActiveSupport::TestCase
       config.disable_irb          = true
       config.enable_caching       = true
     end
-    ComfortableMexicanSofa::HttpAuth.username = 'username'
-    ComfortableMexicanSofa::HttpAuth.password = 'password'
+    Jangle::HttpAuth.username = 'username'
+    Jangle::HttpAuth.password = 'password'
   end
   
   # Example usage:

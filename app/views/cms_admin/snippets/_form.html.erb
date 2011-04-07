@@ -1,7 +1,0 @@
-<% content_for :right_column do %>
-  <%= render :partial => 'cms_admin/uploads/index' %>
-<% end %>
-
-<%= form.text_field :label, :id => (@cms_snippet.new_record?? 'slugify' : nil) %>
-<%= form.text_field :slug, :id => 'slug', :class => 'delimiter-underscore' %>
-<%= form.text_area :content, :class => 'code' %>
