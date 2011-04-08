@@ -26,7 +26,7 @@ class Jangle::SiteTest < ActiveSupport::TestCase
       assert_difference 'Jangle::Layout.count', -3 do
         assert_difference 'Jangle::Page.count', -2 do
           assert_difference 'Jangle::Snippet.count', -1 do
-            cms_sites(:default).destroy
+            jangle_sites(:default).destroy
           end
         end
       end

@@ -13,21 +13,26 @@ class Jangle::Layout
   field :position,   :type => Integer, :default => 0
 
   # -- Relationships --------------------------------------------------------
-  referenced_in :cms_site, :class_name => 'Jangle::Site'
-  references_many :cms_pages, :dependent => :nullify, :class_name => 'Jangle::Page'
+  referenced_in :jangle_site,
+    :class_name => 'Jangle::Site',
+    :inverse_of => :jangle_layouts
+  references_many :jangle_pages,
+    :class_name => 'Jangle::Page',
+    :inverse_of => :jangle_layout,
+    :dependent => :nullify
 
   # -- Callbacks ------------------------------------------------------------
   after_save    :clear_cache, :clear_cached_page_content
   after_destroy :clear_cache, :clear_cached_page_content
 
   # -- Validations ----------------------------------------------------------
-  validates :cms_site_id,
+  validates :jangle_site_id,
     :presence   => true
   validates :label,
     :presence   => true
   validates :slug,
     :presence   => true,
-    :uniqueness => { :scope => :cms_site_id },
+    :uniqueness => { :scope => :jangle_site_id },
     :format     => { :with => /^\w[a-z0-9_-]*$/i }
   validates :content,
     :presence   => true
@@ -35,13 +40,13 @@ class Jangle::Layout
 
   # -- Class Methods --------------------------------------------------------
   # Tree-like structure for layouts
-  def self.options_for_select(cms_site, cms_layout = nil, current_layout = nil, depth = 0, spacer = '. . ')
+  def self.options_for_select(jangle_site, jangle_layout = nil, current_layout = nil, depth = 0, spacer = '. . ')
     out = []
-    [current_layout || cms_site.cms_layouts.roots].flatten.each do |layout|
-      next if cms_layout == layout
+    [current_layout || jangle_site.jangle_layouts.roots].flatten.each do |layout|
+      next if jangle_layout == layout
       out << [ "#{spacer*depth}#{layout.label}", layout.id ]
       layout.children.each do |child|
-        out += options_for_select(cms_site, cms_layout, child, depth + 1, spacer)
+        out += options_for_select(jangle_site, jangle_layout, child, depth + 1, spacer)
       end
     end
     return out.compact
@@ -63,7 +68,7 @@ class Jangle::Layout
     return nil unless File.exists?(file_path)
     attributes            = YAML.load_file(file_path).symbolize_keys!
     attributes[:parent]   = Jangle::Layout.load_from_file(site, attributes[:parent])
-    attributes[:cms_site] = site
+    attributes[:jangle_site] = site
     new(attributes)
   rescue
     raise "Failed to load from #{file_path}"  
@@ -75,7 +80,7 @@ class Jangle::Layout
     if Jangle.configuration.seed_data_path
       load_from_file(site, slug)
     else
-      site.cms_layouts.find_by_slug(slug)
+      site.jangle_layouts.find_by_slug(slug)
     end || raise(Mongoid::Errors::DocumentNotFound.new(self, slug), "Jangle::Layout with slug: #{slug} cannot be found")
   end
 
@@ -121,7 +126,7 @@ protected
 
   # Forcing page content reload
   def clear_cached_page_content
-    self.cms_pages.each{ |page| page.save! }
+    self.jangle_pages.each{ |page| page.save! }
     self.children.each{ |child_layout| child_layout.save! }
   end
 end

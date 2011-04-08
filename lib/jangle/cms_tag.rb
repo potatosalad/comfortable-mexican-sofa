@@ -24,10 +24,10 @@ module CmsTag
     
     # Initializing tag object for a particular Tag type
     # First capture group in the regex is the tag label
-    def initialize_tag(cms_page, tag_signature)
+    def initialize_tag(jangle_page, tag_signature)
       if match = tag_signature.match(regex_tag_signature)
         if self.respond_to?(:initialize_or_find)
-          self.initialize_or_find(cms_page, match[1])
+          self.initialize_or_find(jangle_page, match[1])
         else
           tag = self.new
           tag.label   = match[1]
@@ -79,24 +79,24 @@ module CmsTag
 private
   
   # Initializes a tag. It's handled by one of the tag classes
-  def self.initialize_tag(cms_page, tag_signature)
+  def self.initialize_tag(jangle_page, tag_signature)
     tag_instance = nil
-    tag_classes.find{ |c| tag_instance = c.initialize_tag(cms_page, tag_signature) }
+    tag_classes.find{ |c| tag_instance = c.initialize_tag(jangle_page, tag_signature) }
     tag_instance
   end
   
   # Scanning provided content and splitting it into [tag, text] tuples.
   # Tags are processed further and their content is expanded in the same way.
   # Tags are defined in the parent tags are ignored and not rendered.
-  def self.process_content(cms_page, content = '', parent_tag = nil)
+  def self.process_content(jangle_page, content = '', parent_tag = nil)
     tokens = content.to_s.scan(TOKENIZER_REGEX)
     tokens.collect do |tag_signature, text|
       if tag_signature
-        if tag = self.initialize_tag(cms_page, tag_signature)
+        if tag = self.initialize_tag(jangle_page, tag_signature)
           tag.parent = parent_tag if parent_tag
           if tag.ancestors.select{|a| a.identifier == tag.identifier}.blank?
-            cms_page.cms_tags << tag
-            self.process_content(cms_page, tag.render, tag)
+            jangle_page.cms_tags << tag
+            self.process_content(jangle_page, tag.render, tag)
           end
         end
       else

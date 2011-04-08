@@ -1,6 +1,6 @@
 require File.expand_path('../../test_helper', File.dirname(__FILE__))
 
-class CmsAdmin::UploadsControllerTest < ActionController::TestCase
+class Jangle::UploadsControllerTest < ActionController::TestCase
   
   def test_create
     assert_difference 'Jangle::Upload.count', 1 do
@@ -18,7 +18,7 @@ class CmsAdmin::UploadsControllerTest < ActionController::TestCase
   
   def test_destroy
     assert_difference 'Jangle::Upload.count', -1 do
-      xhr :delete, :destroy, :id => cms_uploads(:default)
+      xhr :delete, :destroy, :id => jangle_uploads(:default)
       assert_response :success
     end
   end

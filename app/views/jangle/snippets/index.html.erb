@@ -2,18 +2,18 @@
 <h1>Snippets</h1>
 
 <ul class='list'>
-  <% @cms_snippets.each do |cms_snippet| %>
-    <li id='cms_snippet_<%= cms_snippet.id %>'>
+  <% @jangle_snippets.each do |jangle_snippet| %>
+    <li id='jangle_snippet_<%= jangle_snippet.id %>'>
       <div class='item'>
         <div class='icon'></div>
         <div class='action_links'>
-          <%= link_to 'Edit', edit_jangle_snippet_path(cms_snippet) %>
-          <%= link_to 'Delete', jangle_snippet_path(cms_snippet), :method => :delete, :confirm => 'Are you sure?' %>
+          <%= link_to 'Edit', edit_jangle_snippet_path(jangle_snippet) %>
+          <%= link_to 'Delete', jangle_snippet_path(jangle_snippet), :method => :delete, :confirm => 'Are you sure?' %>
         </div>
         <div class='label'>
-          <%= link_to cms_snippet.label, edit_jangle_snippet_path(cms_snippet) %>
+          <%= link_to jangle_snippet.label, edit_jangle_snippet_path(jangle_snippet) %>
           <div class='sublabel'>
-            <%= link_to cms_snippet.slug, edit_jangle_snippet_path(cms_snippet) %>
+            <%= link_to jangle_snippet.slug, edit_jangle_snippet_path(jangle_snippet) %>
           </div>
         </div>
       </div>

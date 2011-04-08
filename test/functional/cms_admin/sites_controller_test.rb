@@ -1,11 +1,11 @@
 require File.expand_path('../../test_helper', File.dirname(__FILE__))
 
-class CmsAdmin::SitesControllerTest < ActionController::TestCase
+class Jangle::SitesControllerTest < ActionController::TestCase
   
   def test_get_index
     get :index
     assert_response :success
-    assert assigns(:cms_sites)
+    assert assigns(:jangle_sites)
     assert_template :index
   end
   
@@ -19,17 +19,17 @@ class CmsAdmin::SitesControllerTest < ActionController::TestCase
   def test_get_new
     get :new
     assert_response :success
-    assert assigns(:cms_site)
-    assert_equal 'test.host', assigns(:cms_site).hostname
+    assert assigns(:jangle_site)
+    assert_equal 'test.host', assigns(:jangle_site).hostname
     assert_template :new
     assert_select 'form[action=/cms-admin/sites]'
   end
   
   def test_get_edit
-    site = cms_sites(:default)
+    site = jangle_sites(:default)
     get :edit, :id => site
     assert_response :success
-    assert assigns(:cms_site)
+    assert assigns(:jangle_site)
     assert_template :edit
     assert_select "form[action=/cms-admin/sites/#{site.id}]"
   end
@@ -43,7 +43,7 @@ class CmsAdmin::SitesControllerTest < ActionController::TestCase
   
   def test_creation
     assert_difference 'Jangle::Site.count' do
-      post :create, :cms_site => {
+      post :create, :jangle_site => {
         :label    => 'Test Site',
         :hostname => 'test.site.local'
       }
@@ -55,7 +55,7 @@ class CmsAdmin::SitesControllerTest < ActionController::TestCase
   
   def test_creation_failure
     assert_no_difference 'Jangle::Site.count' do
-      post :create, :cms_site => { }
+      post :create, :jangle_site => { }
       assert_response :success
       assert_template :new
       assert_equal 'Failed to create site', flash[:error]
@@ -63,8 +63,8 @@ class CmsAdmin::SitesControllerTest < ActionController::TestCase
   end
   
   def test_update
-    site = cms_sites(:default)
-    put :update, :id => site, :cms_site => {
+    site = jangle_sites(:default)
+    put :update, :id => site, :jangle_site => {
       :label    => 'New Site',
       :hostname => 'new.site.local'
     }
@@ -77,8 +77,8 @@ class CmsAdmin::SitesControllerTest < ActionController::TestCase
   end
   
   def test_update_failure
-    site = cms_sites(:default)
-    put :update, :id => site, :cms_site => {
+    site = jangle_sites(:default)
+    put :update, :id => site, :jangle_site => {
       :label => ''
     }
     assert_response :success
@@ -90,7 +90,7 @@ class CmsAdmin::SitesControllerTest < ActionController::TestCase
   
   def test_destroy
     assert_difference 'Jangle::Site.count', -1 do
-      delete :destroy, :id => cms_sites(:default)
+      delete :destroy, :id => jangle_sites(:default)
       assert_response :redirect
       assert_redirected_to :action => :index
       assert_equal 'Site deleted', flash[:notice]

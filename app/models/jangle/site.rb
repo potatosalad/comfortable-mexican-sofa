@@ -6,18 +6,30 @@ class Jangle::Site
   field :hostname, :type => String
 
   # -- Relationships --------------------------------------------------------
-  references_many :cms_layouts, :dependent => :destroy, :class_name => 'Jangle::Layout' do
+  references_many :jangle_layouts,
+    :class_name => 'Jangle::Layout',
+    :inverse_of => :jangle_site,
+    :dependent => :destroy do
     def find_by_slug(slug)
       @target.where(:slug => slug).first
     end
   end
-  references_many :cms_pages, :dependent => :destroy, :class_name => 'Jangle::Page' do
+  references_many :jangle_pages,
+    :class_name => 'Jangle::Page',
+    :inverse_of => :jangle_site,
+    :dependent => :destroy do
     def find_by_full_path(full_path)
       @target.where(:full_path => full_path).first
     end
   end
-  references_many :cms_snippets, :dependent => :destroy, :class_name => 'Jangle::Snippet'
-  references_many :cms_uploads,  :dependent => :destroy, :class_name => 'Jangle::Upload'
+  references_many :jangle_snippets,
+    :class_name => 'Jangle::Snippet',
+    :inverse_of => :jangle_site,
+    :dependent => :destroy
+  references_many :jangle_uploads,
+    :class_name => 'Jangle::Upload',
+    :inverse_of => :jangle_site,
+    :dependent => :destroy
 
   # -- Validations ----------------------------------------------------------
   validates :label,
@@ -37,5 +49,11 @@ class Jangle::Site
     criteria = where(:hostname => hostname)
     raise Mongoid::Errors::DocumentNotFound.new(self, hostname) unless criteria.exists?
     criteria.first
+  end
+
+  def self.find_by_hostname(hostname)
+    find_by_hostname!(hostname)
+  rescue Mongoid::Errors::DocumentNotFound
+    return nil
   end
 end

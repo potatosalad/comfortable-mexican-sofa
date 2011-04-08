@@ -8,20 +8,22 @@ class Jangle::Snippet
   field :content, :type => String
 
   # -- Relationships --------------------------------------------------------
-  referenced_in :cms_site, :class_name => 'Jangle::Site'
+  referenced_in :jangle_site,
+    :class_name => 'Jangle::Site',
+    :inverse_of => :jangle_snippets
 
   # -- Callbacks ------------------------------------------------------------
   after_save    :clear_cached_page_content
   after_destroy :clear_cached_page_content
 
   # -- Validations ----------------------------------------------------------
-  validates :cms_site_id,
+  validates :jangle_site_id,
     :presence   => true
   validates :label,
     :presence   => true
   validates :slug,
     :presence   => true,
-    :uniqueness => { :scope => :cms_site_id },
+    :uniqueness => { :scope => :jangle_site_id },
     :format     => { :with => /^\w[a-z0-9_-]*$/i }
 
   # -- Class Methods --------------------------------------------------------
@@ -29,8 +31,8 @@ class Jangle::Snippet
     (s = find_by_slug(slug)) ? s.content : ''
   end
 
-  def self.initialize_or_find(cms_page, slug)
-    load_for_slug(cms_page.cms_site, slug) || new(:slug => slug)
+  def self.initialize_or_find(jangle_page, slug)
+    load_for_slug(jangle_page.jangle_site, slug) || new(:slug => slug)
   end
 
   # Attempting to initialize snippet object from yaml file that is found in config.seed_data_path
@@ -52,7 +54,7 @@ class Jangle::Snippet
     else
       # FIX: This a bit odd... Snippet is used as a tag, so sometimes there's no site scope
       # being passed. So we're enforcing this only if it's found. Need to review.
-      conditions = site ? {:conditions => {:cms_site_id => site.id}} : {}
+      conditions = site ? {:conditions => {:jangle_site_id => site.id}} : {}
       where(:slug => slug).find(:first, conditions)
     end || raise(Mongoid::Errors::DocumentNotFound.new(self, slug), "Jangle::Snippet with slug: #{slug} cannot be found")
   end

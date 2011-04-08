@@ -98,31 +98,31 @@ You can use CMS pages as regular views:
     def show
       @dinosaur = Dinosaur.find(params[:id])
       # CMS page probably should have either helper or partial tag to display @dinosaur details
-      render :cms_page => '/dinosaur
+      render :jangle_page => '/dinosaur
     end
     
 Actually, you don't need to explicitly render a CMS page like that. Sofa will try to rescue a TemplateNotFound by providing a matching CMS page.
 
-You can access **Page** or **Field** tag content directly from your application (layouts/helpers/partials) via `cms_page_content` method. This is how you can pull things like meta tags into your application layout.
+You can access **Page** or **Field** tag content directly from your application (layouts/helpers/partials) via `jangle_page_content` method. This is how you can pull things like meta tags into your application layout.
     
-    # if @cms_page is available (meaning Sofa is doing the rendering)
-    cms_page_content(:page_or_field_label)
+    # if @jangle_page is available (meaning Sofa is doing the rendering)
+    jangle_page_content(:page_or_field_label)
     
     # anywhere else
-    cms_page_content(:page_or_field_label, Jangle::Page.find_by_slug(...))
+    jangle_page_content(:page_or_field_label, Jangle::Page.find_by_slug(...))
     
 Similarly you can access **Snippet** content:
     
-    cms_snippet_content(:snippet_slug)
+    jangle_snippet_content(:snippet_slug)
     
-You can also directly access `@cms_site`, `@cms_layout` and `@cms_page` objects from helpers, partials and application layouts used in rendering of a CMS page.
+You can also directly access `@jangle_site`, `@jangle_layout` and `@jangle_page` objects from helpers, partials and application layouts used in rendering of a CMS page.
     
 Extending Admin Area
 --------------------
 
-If you wish, you can re-use Sofa's admin area for things you need to administer in your application. To do this, first you will need to make your admin controllers to inherit from CmsAdmin::BaseController. This way, your admin views will be using Sofa's admin layout and it's basic HttpAuth.
+If you wish, you can re-use Sofa's admin area for things you need to administer in your application. To do this, first you will need to make your admin controllers to inherit from Jangle::BaseController. This way, your admin views will be using Sofa's admin layout and it's basic HttpAuth.
     
-    class Admin::CategoriesController < CmsAdmin::BaseController
+    class Admin::CategoriesController < Jangle::BaseController
       # your code goes here
     end
     

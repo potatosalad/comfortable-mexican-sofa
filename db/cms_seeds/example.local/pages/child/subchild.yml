@@ -1,9 +1,9 @@
 label: Sub-Child Page
 parent: /child
-cms_layout: nested
+jangle_layout: nested
 full_path: /child/subchild
 slug: subchild
-cms_blocks_attributes:
+jangle_blocks_attributes:
   - 
     label: left
     content: |-

@@ -14,14 +14,19 @@ class Jangle::Page
   field :is_published, :type => Boolean, :default => false
 
   # -- Relationships --------------------------------------------------------
-  referenced_in :cms_site, :class_name => 'Jangle::Site'
-  referenced_in :cms_layout, :class_name => 'Jangle::Layout'
+  referenced_in :jangle_site,
+    :class_name => 'Jangle::Site',
+    :inverse_of => :jangle_pages
+  referenced_in :jangle_layout,
+    :class_name => 'Jangle::Layout',
+    :inverse_of => :jangle_pages
   referenced_in :target_page,
     :class_name => 'Jangle::Page'
-  references_many :cms_blocks,
-    :dependent  => :destroy,
-    :class_name => 'Jangle::Block'
-  accepts_nested_attributes_for :cms_blocks
+  references_many :jangle_blocks,
+    :class_name => 'Jangle::Block',
+    :inverse_of => :jangle_page,
+    :dependent  => :destroy
+  accepts_nested_attributes_for :jangle_blocks
 
   # -- Callbacks ------------------------------------------------------------
   before_validation :assign_parent,
@@ -32,7 +37,7 @@ class Jangle::Page
   after_save  :sync_child_pages
 
   # -- Validations ----------------------------------------------------------
-  validates :cms_site_id, 
+  validates :jangle_site_id, 
     :presence   => true
   validates :label,
     :presence   => true
@@ -40,11 +45,11 @@ class Jangle::Page
     :presence   => true,
     :format     => /^\w[a-z0-9_-]*$/i,
     :unless     => lambda{ |p| p == Jangle::Page.root || Jangle::Page.count == 0 }
-  validates :cms_layout,
+  validates :jangle_layout,
     :presence   => true
   validates :full_path,
     :presence   => true,
-    :uniqueness => { :scope => :cms_site_id }
+    :uniqueness => { :scope => :jangle_site_id }
   validate :validate_target_page
 
   # -- Scopes ---------------------------------------------------------------
@@ -53,12 +58,12 @@ class Jangle::Page
 
   # -- Class Methods --------------------------------------------------------
   # Tree-like structure for pages
-  def self.options_for_select(cms_site, cms_page = nil, current_page = nil, depth = 0, exclude_self = true, spacer = '. . ')
-    return [] if (current_page ||= cms_site.cms_pages.root) == cms_page && exclude_self || !current_page
+  def self.options_for_select(jangle_site, jangle_page = nil, current_page = nil, depth = 0, exclude_self = true, spacer = '. . ')
+    return [] if (current_page ||= jangle_site.jangle_pages.root) == jangle_page && exclude_self || !current_page
     out = []
-    out << [ "#{spacer*depth}#{current_page.label}", current_page.id ] unless current_page == cms_page
+    out << [ "#{spacer*depth}#{current_page.label}", current_page.id ] unless current_page == jangle_page
     current_page.children.each do |child|
-      out += options_for_select(cms_site, cms_page, child, depth + 1, exclude_self, spacer)
+      out += options_for_select(jangle_site, jangle_page, child, depth + 1, exclude_self, spacer)
     end
     return out.compact
   end
@@ -71,9 +76,9 @@ class Jangle::Page
     file_path = "#{Jangle.config.seed_data_path}/#{site.hostname}/pages#{path}.yml"
     return nil unless File.exists?(file_path)
     attributes              = YAML.load_file(file_path).symbolize_keys!
-    attributes[:cms_layout] = Jangle::Layout.load_from_file(site, attributes[:cms_layout])
+    attributes[:jangle_layout] = Jangle::Layout.load_from_file(site, attributes[:jangle_layout])
     attributes[:parent]     = Jangle::Page.load_from_file(site, attributes[:parent])
-    attributes[:cms_site]   = site
+    attributes[:jangle_site]   = site
     attributes[:target_page]= Jangle::Page.load_from_file(site, attributes[:target_page])
     new(attributes)
   rescue
@@ -86,7 +91,7 @@ class Jangle::Page
     if Jangle.configuration.seed_data_path
       load_from_file(site, path)
     else
-      site.cms_pages.find_by_full_path(path)
+      site.jangle_pages.find_by_full_path(path)
     end || raise(Mongoid::Errors::DocumentNotFound.new(self, path), "Jangle::Page with path: #{path} cannot be found")
   end
 
@@ -103,10 +108,10 @@ class Jangle::Page
     self.read_attribute(:full_path) || self.assign_full_path
   end
 
-  # Transforms existing cms_block information into a hash that can be used
-  # during form processing. That's the only way to modify cms_blocks.
-  def cms_blocks_attributes
-    self.cms_blocks.inject([]) do |arr, block|
+  # Transforms existing jangle_block information into a hash that can be used
+  # during form processing. That's the only way to modify jangle_blocks.
+  def jangle_blocks_attributes
+    self.jangle_blocks.inject([]) do |arr, block|
       block_attr = {}
       block_attr[:label]    = block.label
       block_attr[:content]  = block.content
@@ -122,12 +127,12 @@ class Jangle::Page
     @content = nil if force_reload
     @content ||= begin
       self.cms_tags = [] # resetting
-      cms_layout ? CmsTag.process_content(self, cms_layout.merged_content) : ''
+      jangle_layout ? CmsTag.process_content(self, jangle_layout.merged_content) : ''
     end
   end
 
   # Array of cms_tags for a page. Content generation is called if forced.
-  # These also include initialized cms_blocks if present
+  # These also include initialized jangle_blocks if present
   def cms_tags(force_reload = false)
     self.content(true) if force_reload
     @cms_tags ||= []
@@ -135,7 +140,7 @@ class Jangle::Page
 
   # Full url for a page
   def url
-    "http://#{self.cms_site.hostname}#{self.full_path}"
+    "http://#{self.jangle_site.hostname}#{self.full_path}"
   end
 
 protected

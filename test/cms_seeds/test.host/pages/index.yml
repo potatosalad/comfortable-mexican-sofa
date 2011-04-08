@@ -1,9 +1,9 @@
 label: Default Page
 parent:
-cms_layout: default
+jangle_layout: default
 full_path: /
 slug:
-cms_blocks_attributes:
+jangle_blocks_attributes:
   - 
     label: content
     content: |-

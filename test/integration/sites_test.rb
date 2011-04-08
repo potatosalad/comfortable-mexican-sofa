@@ -20,7 +20,7 @@ class SitesTest < ActionDispatch::IntegrationTest
   end
   
   def test_get_admin_with_wrong_site
-    site = cms_sites(:default)
+    site = jangle_sites(:default)
     site.update_attribute(:hostname, 'remote.host')
     assert_no_difference 'Jangle::Site.count' do
       http_auth :get, jangle_pages_path

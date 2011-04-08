@@ -11,31 +11,31 @@ class Jangle::BlockTest < ActiveSupport::TestCase
   def test_new_via_page_nested_attributes
     assert_difference ['Jangle::Page.count', 'Jangle::Block.count'] do
       page = Jangle::Page.create!(
-        :cms_site   => cms_sites(:default),
-        :cms_layout => cms_layouts(:default),
+        :jangle_site   => jangle_sites(:default),
+        :jangle_layout => jangle_layouts(:default),
         :label      => 'test page',
         :slug       => 'test_page',
-        :parent_id  => cms_pages(:default).id,
-        :cms_blocks_attributes => [
+        :parent_id  => jangle_pages(:default).id,
+        :jangle_blocks_attributes => [
           {
             :label    => 'test_block',
             :content  => 'test_content'
           }
         ]
       )
-      assert_equal 1, page.cms_blocks.count
-      block = page.cms_blocks.first
+      assert_equal 1, page.jangle_blocks.count
+      block = page.jangle_blocks.first
       assert_equal 'test_block', block.label
       assert_equal 'test_content', block.content
     end
   end
   
   def test_initialize_or_find
-    tag = CmsTag::PageText.initialize_or_find(cms_pages(:default), :default_field_text)
+    tag = CmsTag::PageText.initialize_or_find(jangle_pages(:default), :default_field_text)
     assert_equal 'default_field_text', tag.label
     assert_equal 'default_field_text_content', tag.content
     
-    tag = CmsTag::PageText.initialize_or_find(cms_pages(:default), :new_block)
+    tag = CmsTag::PageText.initialize_or_find(jangle_pages(:default), :new_block)
     assert_equal 'new_block', tag.label
     assert tag.content.blank?
   end

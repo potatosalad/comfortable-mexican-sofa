@@ -4,8 +4,8 @@ module CmsTagResource
   included do
     attr_reader :resource
 
-    def initialize(cms_page, label)
-      @resource = self.class.cms_tag_class.initialize_or_find(cms_page, label)
+    def initialize(jangle_page, label)
+      @resource = self.class.cms_tag_class.initialize_or_find(jangle_page, label)
     end
   end
 
@@ -22,8 +22,8 @@ module CmsTagResource
       self.cms_tag_class = klass
     end
 
-    def initialize_or_find(cms_page, label)
-      self.new(cms_page, label)
+    def initialize_or_find(jangle_page, label)
+      self.new(jangle_page, label)
     end
   end
 

@@ -22,10 +22,10 @@ class RenderCmsTest < ActionDispatch::IntegrationTest
       render
     end
     def explicit
-      render :cms_page => '/render-explicit-page'
+      render :jangle_page => '/render-explicit-page'
     end
     def seed_data_page
-      render :cms_page => '/'
+      render :jangle_page => '/'
     end
     def render_text
       render :text => 'rendered text'
@@ -44,7 +44,7 @@ class RenderCmsTest < ActionDispatch::IntegrationTest
   end
   
   def test_get_with_implicit_cms_template
-    page = cms_pages(:child)
+    page = jangle_pages(:child)
     page.slug = 'render-implicit'
     page.save!
     get '/render-implicit'
@@ -52,7 +52,7 @@ class RenderCmsTest < ActionDispatch::IntegrationTest
   end
   
   def test_get_with_explicit_cms_template
-    page = cms_pages(:child)
+    page = jangle_pages(:child)
     page.slug = 'render-explicit-page'
     page.save!
     get '/render-explicit'
@@ -60,7 +60,7 @@ class RenderCmsTest < ActionDispatch::IntegrationTest
   end
   
   def test_get_with_explicit_cms_template_failure
-    page = cms_pages(:child)
+    page = jangle_pages(:child)
     page.slug = 'render-explicit-404'
     page.save!
     assert_exception_raised ActionView::MissingTemplate do

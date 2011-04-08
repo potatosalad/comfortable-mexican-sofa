@@ -1,23 +1,23 @@
-<% cms_layout ||= index_branch %>
+<% jangle_layout ||= index_branch %>
 
-<li id='cms_layout_<%= cms_layout.id %>'>
+<li id='jangle_layout_<%= jangle_layout.id %>'>
   <div class='item'>
     <div class='icon'></div>
     <div class='action_links'>
-      <%= link_to 'Add Child Layout', new_jangle_layout_path(:parent_id => cms_layout.id) %>
-      <%= link_to 'Edit', edit_jangle_layout_path(cms_layout) %>
-      <%= link_to 'Delete', jangle_layout_path(cms_layout), :method => :delete, :confirm => 'Are you sure?' %>
+      <%= link_to 'Add Child Layout', new_jangle_layout_path(:parent_id => jangle_layout.id) %>
+      <%= link_to 'Edit', edit_jangle_layout_path(jangle_layout) %>
+      <%= link_to 'Delete', jangle_layout_path(jangle_layout), :method => :delete, :confirm => 'Are you sure?' %>
     </div>
     <div class='label'>
-      <%= link_to cms_layout.label, edit_jangle_layout_path(cms_layout) %>
+      <%= link_to jangle_layout.label, edit_jangle_layout_path(jangle_layout) %>
       <div class='sublabel'>
-        <%= link_to cms_layout.slug, edit_jangle_layout_path(cms_layout) %>
+        <%= link_to jangle_layout.slug, edit_jangle_layout_path(jangle_layout) %>
       </div>
     </div>
   </div>
-  <% if cms_layout.children.present? %>
+  <% if jangle_layout.children.present? %>
     <ul>
-      <%= render :partial => 'index_branch', :collection => cms_layout.children %>
+      <%= render :partial => 'index_branch', :collection => jangle_layout.children %>
     </ul>
   <% end %>
 </li>

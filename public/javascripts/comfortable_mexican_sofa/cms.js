@@ -12,7 +12,7 @@ $.CMS = function(){
     $.CMS.enable_date_picker();
     $.CMS.enable_desc_toggle();
     $.CMS.enable_sortable_list();
-    if($('form.new_cms_page, form.edit_cms_page').get(0)) $.CMS.enable_page_save_form();
+    if($('form.new_jangle_page, form.edit_jangle_page').get(0)) $.CMS.enable_page_save_form();
     if($('#page_save').get(0))        $.CMS.enable_page_save_widget();
     if($('#uploader_button').get(0))  $.CMS.enable_uploader();
   });
@@ -54,7 +54,7 @@ $.CMS = function(){
     
     // Load Page Blocks on layout change
     load_page_blocks: function(){
-      $('select#cms_page_cms_layout_id').bind('change.cms', function() {
+      $('select#jangle_page_jangle_layout_id').bind('change.cms', function() {
         $.ajax({
           url: ['/' + admin_path_prefix, 'pages', $(this).attr('data-page-id'), 'form_blocks'].join('/'),
           data: ({
@@ -150,17 +150,17 @@ $.CMS = function(){
     },
     
     enable_page_save_widget : function(){
-      $('#page_save input').attr('checked', $('input#cms_page_is_published').is(':checked'));
-      $('#page_save button').html($('input#cms_page_submit').val());
+      $('#page_save input').attr('checked', $('input#jangle_page_is_published').is(':checked'));
+      $('#page_save button').html($('input#jangle_page_submit').val());
       
       $('#page_save input').bind('click', function(){
-        $('input#cms_page_is_published').attr('checked', $(this).is(':checked'));
+        $('input#jangle_page_is_published').attr('checked', $(this).is(':checked'));
       })
-      $('input#cms_page_is_published').bind('click', function(){
+      $('input#jangle_page_is_published').bind('click', function(){
         $('#page_save input').attr('checked', $(this).is(':checked'));
       })
       $('#page_save button').bind('click', function(){
-        $('input#cms_page_submit').click();
+        $('input#jangle_page_submit').click();
       })
     },
     

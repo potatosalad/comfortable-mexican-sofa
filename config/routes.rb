@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  
   namespace :jangle, :path => Jangle.config.admin_route_prefix, :except => :show do
     get '/' => redirect(Jangle.config.admin_route_redirect)
     resources :pages do
@@ -22,5 +21,4 @@ Rails.application.routes.draw do
     get File.join(Jangle.config.cms_js_path, ':id')  => :render_js,  :as => 'cms_js'
     get '/'             => :render_html,  :as => 'cms_html',  :path => '(*cms_path)'
   end
-  
 end

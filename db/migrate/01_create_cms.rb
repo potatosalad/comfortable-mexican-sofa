@@ -2,15 +2,15 @@ class CreateCms < ActiveRecord::Migration
   
   def self.up
     # -- Sites --------------------------------------------------------------
-    create_table :cms_sites do |t|
+    create_table :jangle_sites do |t|
       t.string :label
       t.string :hostname
     end
-    add_index :cms_sites, :hostname
+    add_index :jangle_sites, :hostname
     
     # -- Layouts ------------------------------------------------------------
-    create_table :cms_layouts do |t|
-      t.integer :cms_site_id
+    create_table :jangle_layouts do |t|
+      t.integer :jangle_site_id
       t.integer :parent_id
       t.string  :app_layout
       t.string  :label
@@ -21,13 +21,13 @@ class CreateCms < ActiveRecord::Migration
       t.integer :position, :null => false, :default => 0
       t.timestamps
     end
-    add_index :cms_layouts, [:parent_id, :position]
-    add_index :cms_layouts, [:cms_site_id, :slug], :unique => true
+    add_index :jangle_layouts, [:parent_id, :position]
+    add_index :jangle_layouts, [:jangle_site_id, :slug], :unique => true
     
     # -- Pages --------------------------------------------------------------
-    create_table :cms_pages do |t|
-      t.integer :cms_site_id
-      t.integer :cms_layout_id
+    create_table :jangle_pages do |t|
+      t.integer :jangle_site_id
+      t.integer :jangle_layout_id
       t.integer :parent_id
       t.integer :target_page_id
       t.string  :label
@@ -39,45 +39,45 @@ class CreateCms < ActiveRecord::Migration
       t.boolean :is_published,    :null => false, :default => true
       t.timestamps
     end
-    add_index :cms_pages, [:cms_site_id, :full_path]
-    add_index :cms_pages, [:parent_id, :position]
+    add_index :jangle_pages, [:jangle_site_id, :full_path]
+    add_index :jangle_pages, [:parent_id, :position]
     
     # -- Page Blocks --------------------------------------------------------
-    create_table :cms_blocks do |t|
-      t.integer   :cms_page_id
+    create_table :jangle_blocks do |t|
+      t.integer   :jangle_page_id
       t.string    :label
       t.text      :content
       t.timestamps
     end
-    add_index :cms_blocks, [:cms_page_id, :label]
+    add_index :jangle_blocks, [:jangle_page_id, :label]
     
     # -- Snippets -----------------------------------------------------------
-    create_table :cms_snippets do |t|
-      t.integer :cms_site_id
+    create_table :jangle_snippets do |t|
+      t.integer :jangle_site_id
       t.string  :label
       t.string  :slug
       t.text    :content
       t.timestamps
     end
-    add_index :cms_snippets, [:cms_site_id, :slug], :unique => true
+    add_index :jangle_snippets, [:jangle_site_id, :slug], :unique => true
     
     # -- Assets -------------------------------------------------------------
-    create_table :cms_uploads do |t|
-      t.integer :cms_site_id
+    create_table :jangle_uploads do |t|
+      t.integer :jangle_site_id
       t.string  :file_file_name
       t.string  :file_content_type
       t.integer :file_file_size
       t.timestamps
     end
-    add_index :cms_uploads, [:cms_site_id, :file_file_name]
+    add_index :jangle_uploads, [:jangle_site_id, :file_file_name]
   end
   
   def self.down
-    drop_table :cms_sites
-    drop_table :cms_layouts
-    drop_table :cms_pages
-    drop_table :cms_snippets
-    drop_table :cms_blocks
-    drop_table :cms_uploads
+    drop_table :jangle_sites
+    drop_table :jangle_layouts
+    drop_table :jangle_pages
+    drop_table :jangle_snippets
+    drop_table :jangle_blocks
+    drop_table :jangle_uploads
   end
 end

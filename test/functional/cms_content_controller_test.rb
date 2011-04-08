@@ -4,7 +4,7 @@ class CmsContentControllerTest < ActionController::TestCase
 
   def test_render_page
     get :render_html, :cms_path => ''
-    assert_equal assigns(:cms_page), cms_pages(:default)
+    assert_equal assigns(:jangle_page), jangle_pages(:default)
     assert_response :success
     assert_equal rendered_content_formatter(
       '
@@ -19,7 +19,7 @@ class CmsContentControllerTest < ActionController::TestCase
   end
   
   def test_render_page_with_app_layout
-    cms_layouts(:default).update_attribute(:app_layout, 'jangle.html.erb')
+    jangle_layouts(:default).update_attribute(:app_layout, 'jangle.html.erb')
     get :render_html, :cms_path => ''
     assert_response :success
     assert_select "body[class='c_cms_content a_render_html']"
@@ -32,13 +32,13 @@ class CmsContentControllerTest < ActionController::TestCase
   end
   
   def test_render_page_not_found_with_custom_404
-    page = cms_sites(:default).cms_pages.create!(
+    page = jangle_sites(:default).jangle_pages.create!(
       :label          => '404',
       :slug           => '404',
-      :parent_id      => cms_pages(:default).id,
-      :cms_layout_id  => cms_layouts(:default).id,
+      :parent_id      => jangle_pages(:default).id,
+      :jangle_layout_id  => jangle_layouts(:default).id,
       :is_published   => '1',
-      :cms_blocks_attributes => [
+      :jangle_blocks_attributes => [
         { :label    => 'default_page_text',
           :type     => 'CmsTag::PageText',
           :content  => 'custom 404 page content' }
@@ -48,20 +48,20 @@ class CmsContentControllerTest < ActionController::TestCase
     assert page.is_published?
     get :render_html, :cms_path => 'doesnotexist'
     assert_response 404
-    assert assigns(:cms_page)
+    assert assigns(:jangle_page)
     assert_match /custom 404 page content/, response.body
   end
   
   def test_render_page_with_redirect
-    cms_pages(:child).update_attribute(:target_page, cms_pages(:default))
-    assert_equal cms_pages(:default), cms_pages(:child).target_page
+    jangle_pages(:child).update_attribute(:target_page, jangle_pages(:default))
+    assert_equal jangle_pages(:default), jangle_pages(:child).target_page
     get :render_html, :cms_path => 'child-page'
     assert_response :redirect
     assert_redirected_to '/'
   end
   
   def test_render_page_unpublished
-    page = cms_pages(:default)
+    page = jangle_pages(:default)
     page.update_attribute(:is_published, false)
     get :render_html, :cms_path => ''
     assert_response 404
@@ -70,13 +70,13 @@ class CmsContentControllerTest < ActionController::TestCase
   def test_render_page_with_irb_disabled
     assert Jangle.config.disable_irb
     
-    irb_page = cms_sites(:default).cms_pages.create!(
+    irb_page = jangle_sites(:default).jangle_pages.create!(
       :label          => 'irb',
       :slug           => 'irb',
-      :parent_id      => cms_pages(:default).id,
-      :cms_layout_id  => cms_layouts(:default).id,
+      :parent_id      => jangle_pages(:default).id,
+      :jangle_layout_id  => jangle_layouts(:default).id,
       :is_published   => '1',
-      :cms_blocks_attributes => [
+      :jangle_blocks_attributes => [
         { :label    => 'default_page_text',
           :content  => 'text <%= 2 + 2 %> text' }
       ]
@@ -89,13 +89,13 @@ class CmsContentControllerTest < ActionController::TestCase
   def test_render_page_with_irb_enabled
     Jangle.config.disable_irb = false
     
-    irb_page = cms_sites(:default).cms_pages.create!(
+    irb_page = jangle_sites(:default).jangle_pages.create!(
       :label          => 'irb',
       :slug           => 'irb',
-      :parent_id      => cms_pages(:default).id,
-      :cms_layout_id  => cms_layouts(:default).id,
+      :parent_id      => jangle_pages(:default).id,
+      :jangle_layout_id  => jangle_layouts(:default).id,
       :is_published   => '1',
-      :cms_blocks_attributes => [
+      :jangle_blocks_attributes => [
         { :label    => 'default_page_text',
           :content  => 'text <%= 2 + 2 %> text' }
       ]
@@ -106,10 +106,10 @@ class CmsContentControllerTest < ActionController::TestCase
   end
   
   def test_render_css
-    get :render_css, :id => cms_layouts(:default).slug
+    get :render_css, :id => jangle_layouts(:default).slug
     assert_response :success
     assert_match %r{text\/css}, response.headers["Content-Type"]
-    assert_equal cms_layouts(:default).css, response.body
+    assert_equal jangle_layouts(:default).css, response.body
   end
   
   def test_render_css_not_found
@@ -118,10 +118,10 @@ class CmsContentControllerTest < ActionController::TestCase
   end
   
   def test_render_js
-    get :render_js, :id => cms_layouts(:default).slug
+    get :render_js, :id => jangle_layouts(:default).slug
     assert_response :success
     assert_match %r{text\/javascript}, response.headers["Content-Type"]
-    assert_equal cms_layouts(:default).js, response.body
+    assert_equal jangle_layouts(:default).js, response.body
   end
   
   def test_render_js_not_found

@@ -67,7 +67,7 @@ class CmsTagTest < ActiveSupport::TestCase
   end
   
   def test_content_for_existing_page
-    page = cms_pages(:default)
+    page = jangle_pages(:default)
     assert page.cms_tags.blank?
     assert_equal rendered_content_formatter(
       '
@@ -90,15 +90,15 @@ class CmsTagTest < ActiveSupport::TestCase
   
   def test_content_for_new_page
     page = Jangle::Page.new
-    assert page.cms_blocks.blank?
+    assert page.jangle_blocks.blank?
     assert page.cms_tags.blank?
     assert_equal '', page.content
     assert page.cms_tags.blank?
   end
   
   def test_content_for_new_page_with_layout
-    page = Jangle::Page.new(:cms_layout => cms_layouts(:default))
-    assert page.cms_blocks.blank?
+    page = Jangle::Page.new(:jangle_layout => jangle_layouts(:default))
+    assert page.jangle_blocks.blank?
     assert page.cms_tags.blank?
     assert_equal rendered_content_formatter(
       '
@@ -115,11 +115,11 @@ class CmsTagTest < ActiveSupport::TestCase
     assert_equal 'cms_tag/snippet_default', page.cms_tags[2].identifier
   end
   
-  def test_content_for_new_page_with_initilized_cms_blocks
-    page = Jangle::Page.new(:cms_layout => cms_layouts(:default))
-    assert page.cms_blocks.blank?
+  def test_content_for_new_page_with_initilized_jangle_blocks
+    page = Jangle::Page.new(:jangle_layout => jangle_layouts(:default))
+    assert page.jangle_blocks.blank?
     assert page.cms_tags.blank?
-    page.cms_blocks_attributes = [
+    page.jangle_blocks_attributes = [
       {
         :label    => 'default_field_text',
         :content  => 'new_default_field_content',
@@ -136,7 +136,7 @@ class CmsTagTest < ActiveSupport::TestCase
         :type     => 'CmsTag::PageText'
       }
     ]
-    assert_equal 3, page.cms_blocks.size
+    assert_equal 3, page.jangle_blocks.size
     
     assert_equal rendered_content_formatter(
       '
@@ -157,9 +157,9 @@ class CmsTagTest < ActiveSupport::TestCase
   end
   
   def test_content_with_repeated_tags
-    page = cms_pages(:default)
-    page.cms_layout.content << "\n{{cms:page:default_page_text:text}}"
-    page.cms_layout.save!
+    page = jangle_pages(:default)
+    page.jangle_layout.content << "\n{{cms:page:default_page_text:text}}"
+    page.jangle_layout.save!
     
     assert_equal rendered_content_formatter(
       '
@@ -187,8 +187,8 @@ class CmsTagTest < ActiveSupport::TestCase
   end
   
   def test_content_with_cyclical_tags
-    page = cms_pages(:default)
-    snippet = cms_snippets(:default)
+    page = jangle_pages(:default)
+    snippet = jangle_snippets(:default)
     snippet.update_attribute(:content, "infinite {{cms:page:default}} loop")
     assert_equal rendered_content_formatter(
       '

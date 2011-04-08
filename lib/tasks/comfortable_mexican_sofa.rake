@@ -39,7 +39,7 @@ namespace :comfortable_mexican_sofa do
       layouts = Dir.glob(File.expand_path('layouts/*.yml', @seed_path)).collect do |layout_file_path|
         begin
           attributes = YAML.load_file(layout_file_path).symbolize_keys!
-          @site.cms_layouts.load_from_file(@site, attributes[:slug])
+          @site.jangle_layouts.load_from_file(@site, attributes[:slug])
         rescue
           nil
         end
@@ -49,12 +49,12 @@ namespace :comfortable_mexican_sofa do
         # so we cycle them until there nothing left to save
         while layouts.present?
           layout = layouts.shift
-          if !layout.parent || layout.parent && parent = @site.cms_layouts.find_by_slug(layout.parent.slug)
+          if !layout.parent || layout.parent && parent = @site.jangle_layouts.find_by_slug(layout.parent.slug)
             layout.parent = (parent rescue nil)
             should_write    = true
             existing_layout = nil
             
-            if existing_layout = @site.cms_layouts.find_by_slug(layout.slug)
+            if existing_layout = @site.jangle_layouts.find_by_slug(layout.slug)
               print "Found layout in database with slug: #{layout.slug}. Overwrite? (y/N): "
               should_write = ($stdin.gets.to_s.strip.downcase == 'y')
             end
@@ -82,7 +82,7 @@ namespace :comfortable_mexican_sofa do
       pages = Dir.glob(File.expand_path('pages/**/*.yml', @seed_path)).collect do |page_file_path|
         begin
           attributes = YAML.load_file(page_file_path).symbolize_keys!
-          @site.cms_pages.load_from_file(@site, attributes[:full_path])
+          @site.jangle_pages.load_from_file(@site, attributes[:full_path])
         rescue
           nil
         end
@@ -92,28 +92,28 @@ namespace :comfortable_mexican_sofa do
         # so we cycle them until there nothing left to save
         while pages.present?
           page = pages.shift
-          if !page.parent || page.parent && parent = @site.cms_pages.find_by_full_path(page.parent.full_path)
+          if !page.parent || page.parent && parent = @site.jangle_pages.find_by_full_path(page.parent.full_path)
             page.parent = (parent rescue nil)
-            page.cms_layout = @site.cms_layouts.find_by_slug(page.cms_layout.slug)
+            page.jangle_layout = @site.jangle_layouts.find_by_slug(page.jangle_layout.slug)
             should_write  = true
             existing_page = nil
             
-            if existing_page = @site.cms_pages.find_by_full_path(page.full_path)
+            if existing_page = @site.jangle_pages.find_by_full_path(page.full_path)
               print "Found page in database with full_path: #{page.full_path}. Overwrite? (y/N): "
               should_write = ($stdin.gets.to_s.strip.downcase == 'y')
             end
             
             if should_write
               if existing_page
-                # merging cms_blocks_attributes with the existing page
-                attrs = page.cms_blocks_attributes.collect do |block_attrs|
-                  existing_block = existing_page.cms_blocks_attributes.find{|b| b[:label] == block_attrs[:label]}
+                # merging jangle_blocks_attributes with the existing page
+                attrs = page.jangle_blocks_attributes.collect do |block_attrs|
+                  existing_block = existing_page.jangle_blocks_attributes.find{|b| b[:label] == block_attrs[:label]}
                   block_attrs[:id] = existing_block[:id] if existing_block
                   block_attrs.stringify_keys
                 end
                 
                 existing_page.attributes = page.attributes.slice('label')
-                existing_page.cms_blocks_attributes = attrs
+                existing_page.jangle_blocks_attributes = attrs
                 page = existing_page
               end
               puts "... Saving page: #{page.label} (#{page.full_path})"
@@ -135,7 +135,7 @@ namespace :comfortable_mexican_sofa do
       snippets = Dir.glob(File.expand_path('snippets/*.yml', @seed_path)).collect do |snippet_file_path|
         begin
           attributes = YAML.load_file(snippet_file_path).symbolize_keys!
-          @site.cms_snippets.load_from_file(@site, attributes[:slug])
+          @site.jangle_snippets.load_from_file(@site, attributes[:slug])
         rescue
           nil
         end
@@ -144,7 +144,7 @@ namespace :comfortable_mexican_sofa do
         snippets.each do |snippet|
           should_write      = true
           existing_snippet  = nil
-          if existing_snippet = @site.cms_snippets.find_by_slug(snippet.slug)
+          if existing_snippet = @site.jangle_snippets.find_by_slug(snippet.slug)
             print "Found snippet in database with slug: #{snippet.slug}. Overwrite? (y/N): "
             should_write = ($stdin.gets.to_s.strip.downcase == 'y')
           end
@@ -241,8 +241,8 @@ namespace :comfortable_mexican_sofa do
           attributes = page.attributes.slice('label', 'slug', 'full_path', 'is_published')
           attributes['targe_page']            = page.target_page.full_path if page.target_page
           attributes['parent']                = page.parent.full_path if page.parent
-          attributes['cms_layout']            = page.cms_layout.slug
-          attributes['cms_blocks_attributes'] = page.cms_blocks_attributes.collect{|b| b.delete(:id) && b.stringify_keys}
+          attributes['jangle_layout']            = page.jangle_layout.slug
+          attributes['jangle_blocks_attributes'] = page.jangle_blocks_attributes.collect{|b| b.delete(:id) && b.stringify_keys}
           
           open(file_path, 'w') do |f|
             f.write(attributes.to_yaml)

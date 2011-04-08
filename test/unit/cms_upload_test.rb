@@ -12,7 +12,7 @@ class Jangle::UploadTest < ActiveSupport::TestCase
   
   def test_create
     assert_difference 'Jangle::Upload.count' do
-      cms_sites(:default).cms_uploads.create(
+      jangle_sites(:default).jangle_uploads.create(
         :file => fixture_file_upload('files/valid_image.jpg')
       )
     end
@@ -20,7 +20,7 @@ class Jangle::UploadTest < ActiveSupport::TestCase
   
   def test_create_failure
     assert_no_difference 'Jangle::Upload.count' do
-      cms_sites(:default).cms_uploads.create(:file => '')
+      jangle_sites(:default).jangle_uploads.create(:file => '')
     end
   end
 end

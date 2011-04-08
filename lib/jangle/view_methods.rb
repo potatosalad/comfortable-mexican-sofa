@@ -21,19 +21,19 @@ module Jangle::ViewMethods
   end
   
   # Content of a snippet. Example:
-  #   cms_snippet_content(:my_snippet)
-  def cms_snippet_content(snippet_slug)
+  #   jangle_snippet_content(:my_snippet)
+  def jangle_snippet_content(snippet_slug)
     return '' unless snippet = Jangle::Snippet.find_by_slug(snippet_slug)
     snippet.content.to_s.html_safe
   end
   
   # Content of a page block. This is how you get content from page:field
   # Example:
-  #   cms_page_content(:left_column, Jangle::Page.first)
-  #   cms_page_content(:left_column) # if @cms_page is present
-  def cms_page_content(block_label, page = nil)
-    return '' unless page ||= @cms_page
-    return '' unless block = page.cms_blocks.find_by_label(block_label)
+  #   jangle_page_content(:left_column, Jangle::Page.first)
+  #   jangle_page_content(:left_column) # if @jangle_page is present
+  def jangle_page_content(block_label, page = nil)
+    return '' unless page ||= @jangle_page
+    return '' unless block = page.jangle_blocks.find_by_label(block_label)
     block.content.to_s.html_safe
   end
 end

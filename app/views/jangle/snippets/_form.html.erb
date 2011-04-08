@@ -2,6 +2,6 @@
   <%= render :partial => 'jangle/uploads/index' %>
 <% end %>
 
-<%= form.text_field :label, :id => (@cms_snippet.new_record?? 'slugify' : nil) %>
+<%= form.text_field :label, :id => (@jangle_snippet.new_record?? 'slugify' : nil) %>
 <%= form.text_field :slug, :id => 'slug', :class => 'delimiter-underscore' %>
 <%= form.text_area :content, :class => 'code' %>

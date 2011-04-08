@@ -3,7 +3,7 @@ require File.expand_path('../test_helper', File.dirname(__FILE__))
 class ViewHooksTest < ActionDispatch::IntegrationTest
   
   def test_hooks_rendering
-    CmsAdmin::SitesController.append_view_path(File.expand_path('../fixtures/views', File.dirname(__FILE__)))
+    Jangle::SitesController.append_view_path(File.expand_path('../fixtures/views', File.dirname(__FILE__)))
     Jangle::ViewHooks.add(:navigation, '/nav_hook')
     
     http_auth :get, jangle_sites_path
@@ -12,7 +12,7 @@ class ViewHooksTest < ActionDispatch::IntegrationTest
   end
   
   def test_hooks_rendering_with_multiples
-    CmsAdmin::SitesController.append_view_path(File.expand_path('../fixtures/views', File.dirname(__FILE__)))
+    Jangle::SitesController.append_view_path(File.expand_path('../fixtures/views', File.dirname(__FILE__)))
     Jangle::ViewHooks.add(:navigation, '/nav_hook')
     Jangle::ViewHooks.add(:navigation, '/nav_hook_2')
     

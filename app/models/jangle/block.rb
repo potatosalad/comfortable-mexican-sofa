@@ -7,26 +7,28 @@ class Jangle::Block
   field :content, :type => String
 
   # -- Relationships --------------------------------------------------------
-  referenced_in :cms_page, :class_name => 'Jangle::Page'
+  referenced_in :jangle_page,
+    :class_name => 'Jangle::Page',
+    :inverse_of => :jangle_blocks
 
   # -- Validations ----------------------------------------------------------
   #validates :label,
   #  :presence   => true,
-  #  :uniqueness => { :scope => :cms_page_id }
+  #  :uniqueness => { :scope => :jangle_page_id }
 
   # -- Class Methods --------------------------------------------------------
-  def self.initialize_or_find(cms_page, label)
-    if block = cms_page.cms_blocks.where(:label => label.to_s).first
+  def self.initialize_or_find(jangle_page, label)
+    if block = jangle_page.jangle_blocks.where(label: label.to_s).first
       self.new(
         :record_id  => block.id,
-        :cms_page   => cms_page,
+        :jangle_page   => jangle_page,
         :label      => block.label,
         :content    => block.content
       )
     else
       self.new(
         :label    => label.to_s,
-        :cms_page => cms_page
+        :jangle_page => jangle_page
       )
     end
   end

@@ -2,9 +2,9 @@
   <%= render :partial => 'jangle/uploads/index' %>
 <% end %>
 
-<%= form.text_field :label, :label => 'Layout Name', :id => (@cms_layout.new_record?? 'slugify' : nil)%>
+<%= form.text_field :label, :label => 'Layout Name', :id => (@jangle_layout.new_record?? 'slugify' : nil)%>
 <%= form.text_field :slug, :id => 'slug' %>
-<% if (options = Jangle::Layout.options_for_select(@cms_site, @cms_layout)).present? %>
+<% if (options = Jangle::Layout.options_for_select(@jangle_site, @jangle_layout)).present? %>
   <%= form.select :parent_id, [['---- Select Parent Layout ----', nil]] + options %>
 <% end %>
 <% if (options = Jangle::Layout.app_layouts_for_select).present? %>

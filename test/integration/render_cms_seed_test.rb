@@ -18,8 +18,8 @@ class RenderCmsSeedTest < ActionDispatch::IntegrationTest
     
     get '/'
     assert_response :success
-    assert assigns(:cms_page)
-    assert assigns(:cms_page).new_record?
+    assert assigns(:jangle_page)
+    assert assigns(:jangle_page).new_record?
   end
   
   def test_get_seed_data_css
@@ -27,8 +27,8 @@ class RenderCmsSeedTest < ActionDispatch::IntegrationTest
     
     get '/cms-css/default'
     assert_response :success
-    assert assigns(:cms_layout)
-    assert assigns(:cms_layout).new_record?
+    assert assigns(:jangle_layout)
+    assert assigns(:jangle_layout).new_record?
   end
   
 end
