@@ -8,7 +8,7 @@ class CmsContentController < ApplicationController
   
   def render_html(status = 200)
     layout = @jangle_page.jangle_layout.app_layout.blank?? false : @jangle_page.jangle_layout.app_layout
-    render :inline => @jangle_page.content, :layout => layout, :status => status
+    render :inline => liquify(@jangle_page.content), :layout => layout, :status => status
   end
   
   def render_css
@@ -17,6 +17,10 @@ class CmsContentController < ApplicationController
   
   def render_js
     render :text => @jangle_layout.js, :content_type => 'text/javascript'
+  end
+
+  def to_liquid
+    { 'name' => controller_name }
   end
   
 protected
@@ -43,6 +47,10 @@ protected
     @jangle_layout = Jangle::Layout.load_for_slug!(@jangle_site, params[:id])
   rescue Mongoid::Errors::DocumentNotFound
     render :nothing => true, :status => 404
+  end
+
+  def liquify(template)
+    Liquid::Template.parse(template).render('controller' => self)
   end
   
 end

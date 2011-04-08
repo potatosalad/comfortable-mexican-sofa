@@ -9,7 +9,11 @@ class Jangle::BaseController < ActionController::Base
                 :load_admin_jangle_site
   
   layout 'jangle'
-  
+
+  def to_liquid
+    { 'name' => controller_name }
+  end
+
 protected
   
   def load_admin_jangle_site
@@ -31,5 +35,9 @@ protected
       flash[:error] = 'No Site defined for this hostname. Create it now.'
       return redirect_to(jangle_sites_path)
     end
+  end
+
+  def liquify(template)
+    Liquid::Template.parse(template).render('controller' => self)
   end
 end

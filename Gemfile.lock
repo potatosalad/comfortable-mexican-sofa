@@ -41,6 +41,7 @@ GEM
       bundler (~> 1.0.0)
       git (>= 1.2.5)
       rake
+    liquid (2.2.2)
     mail (2.2.15)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -98,6 +99,7 @@ DEPENDENCIES
   active_link_to (>= 0.0.6)
   bson_ext (~> 1.2)
   jeweler (>= 1.4.0)
+  liquid
   mime-types
   mongoid (~> 2.0)
   mongoid-paperclip

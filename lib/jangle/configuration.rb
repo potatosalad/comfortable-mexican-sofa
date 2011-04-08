@@ -42,7 +42,7 @@ class Jangle::Configuration
     @cms_title            = 'Jangle MicroCMS'
     @authentication       = 'Jangle::HttpAuth'
     @seed_data_path       = nil
-    @admin_route_prefix   = 'cms-admin'
+    @admin_route_prefix   = 'jangle'
     @admin_route_redirect = "/#{@admin_route_prefix}/pages"
     @auto_manage_sites    = true
     @disable_irb          = true

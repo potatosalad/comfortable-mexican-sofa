@@ -83,39 +83,57 @@ $.CMS = function(){
          theme_advanced_resize_horizontal : false
        });
     },
-    
-    enable_codemirror: function(){
-      $('textarea.code').each(function(i, element){
+
+    addCodeMirrorEditor: function(type, el, parser) {
+      parser = (parser || 'Liquid') + 'Parser';
+      var editor = CodeMirror.fromTextArea(el.attr('id'), {
+        basefiles: '/javascripts/comfortable_mexican_sofa/codemirror/codemirror_base.min.js',
+        stylesheet: [
+          "/stylesheets/comfortable_mexican_sofa/codemirror/csscolors.css",
+          "/stylesheets/comfortable_mexican_sofa/codemirror/xmlcolors.css",
+          "/stylesheets/comfortable_mexican_sofa/codemirror/javascriptcolors.css",
+          "/stylesheets/comfortable_mexican_sofa/codemirror/liquidcolors.css"
+        ],
+        continuousScanning: 500,
+        reindentOnLoad: true,
+        initCallback: function(editor) {
+          jQuery(editor.frame.contentDocument).keydown(function(event) {
+            jQuery(document).trigger(event);
+          });
+          editor.setParser(parser);
+        },
+        lineNumbers: true
+      });
+    },
+
+    enable_codemirror: function() {
+      $('textarea.code').each(function(i, element) {
         CodeMirror.fromTextArea(element, {
-          basefiles: [
-            "/javascripts/comfortable_mexican_sofa/codemirror/codemirror_base.js",
-            "/javascripts/comfortable_mexican_sofa/codemirror/parse_xml.js",
-            "/javascripts/comfortable_mexican_sofa/codemirror/parse_css.js",
-            "/javascripts/comfortable_mexican_sofa/codemirror/parse_js.js",
-            "/javascripts/comfortable_mexican_sofa/codemirror/parse_html_mixed.js"
+          basefiles: '/javascripts/comfortable_mexican_sofa/codemirror/codemirror_base.min.js',
+          stylesheet: [
+            "/stylesheets/comfortable_mexican_sofa/codemirror/csscolors.css",
+            "/stylesheets/comfortable_mexican_sofa/codemirror/xmlcolors.css",
+            "/stylesheets/comfortable_mexican_sofa/codemirror/javascriptcolors.css",
+            "/stylesheets/comfortable_mexican_sofa/codemirror/liquidcolors.css"
           ],
-          stylesheet: "/javascripts/comfortable_mexican_sofa/codemirror/codemirror.css"
+          continuousScanning: 500,
+          reindentOnLoad: true,
+          initCallback: function(editor) {
+            jQuery(editor.frame.contentDocument).keydown(function(event) {
+              jQuery(document).trigger(event);
+            });
+            editor.setParser('LiquidParser');
+          },
+          lineNumbers: true
         });
       });
       
       $('textarea.code_css').each(function(i, element){
-        CodeMirror.fromTextArea(element, {
-          basefiles: [
-            "/javascripts/comfortable_mexican_sofa/codemirror/codemirror_base.js",
-            "/javascripts/comfortable_mexican_sofa/codemirror/parse_css.js"
-          ],
-          stylesheet: "/javascripts/comfortable_mexican_sofa/codemirror/codemirror.css"
-        });
+        $.CMS.addCodeMirrorEditor(null, $(element), 'CSS');
       });
       
       $('textarea.code_js').each(function(i, element){
-        CodeMirror.fromTextArea(element, {
-          basefiles: [
-            "/javascripts/comfortable_mexican_sofa/codemirror/codemirror_base.js",
-            "/javascripts/comfortable_mexican_sofa/codemirror/parse_js.js"
-          ],
-          stylesheet: "/javascripts/comfortable_mexican_sofa/codemirror/codemirror.css"
-        });
+        $.CMS.addCodeMirrorEditor(null, $(element), 'JS');
       });
     },
     

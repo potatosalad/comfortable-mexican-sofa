@@ -97,7 +97,7 @@ protected
   def preview_jangle_page
     if params[:preview]
       layout = @jangle_page.jangle_layout.app_layout.blank?? false : @jangle_page.jangle_layout.app_layout
-      render :inline => @jangle_page.content(true), :layout => layout
+      render :inline => liquify(@jangle_page.content(true)), :layout => layout
     end
   end
 end
