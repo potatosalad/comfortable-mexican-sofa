@@ -1,7 +1,6 @@
 class Jangle::Layout
-  include Mongoid::Document
+  include Jangle::Mongoid::Document
   include Mongoid::Tree
-  include Mongoid::Timestamps
 
   # -- Fields ---------------------------------------------------------------
   field :label,      :type => String

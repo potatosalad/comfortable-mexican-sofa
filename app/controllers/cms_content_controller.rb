@@ -8,7 +8,7 @@ class CmsContentController < ApplicationController
   
   def render_html(status = 200)
     layout = @jangle_page.jangle_layout.app_layout.blank?? false : @jangle_page.jangle_layout.app_layout
-    render :inline => liquify(@jangle_page.content), :layout => layout, :status => status
+    render :inline => @jangle_page.render(jangle_context), :layout => layout, :status => status
   end
   
   def render_css
@@ -49,8 +49,20 @@ protected
     render :nothing => true, :status => 404
   end
 
-  def liquify(template)
-    Liquid::Template.parse(template).render('controller' => self)
+  def jangle_context
+    assigns = {
+      'site'              => @jangle_site,
+      'page'              => @jangle_page,
+      'current_page'      => self.params[:cms_path]
+    }.merge(flash.stringify_keys) # data from api
+
+    registers = {
+      :controller     => self,
+      :site           => @jangle_site,
+      :page           => @jangle_page
+    }
+
+    Liquid::Context.new({}, assigns, registers)
   end
   
 end

@@ -1,7 +1,9 @@
 class Jangle::Page
-  include Mongoid::Document
+  include Jangle::Mongoid::Document
   include Mongoid::Tree
-  include Mongoid::Timestamps
+
+  include Models::Jangle::Extensions::Parse
+  include Models::Jangle::Extensions::Render
 
   attr_accessor :cms_tags
 
@@ -141,6 +143,10 @@ class Jangle::Page
   # Full url for a page
   def url
     "http://#{self.jangle_site.hostname}#{self.full_path}"
+  end
+
+  def to_liquid
+    Jangle::Liquid::Drops::Page.new(self)
   end
 
 protected

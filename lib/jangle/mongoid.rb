@@ -1,0 +1,1 @@
+require 'jangle/mongoid/document'

@@ -12,6 +12,8 @@ Rails.application.routes.draw do
     end
     resources :sites
     resources :layouts
+    resources :templates
+    resources :widgets
     resources :snippets
     resources :uploads, :only => [:create, :destroy]
   end

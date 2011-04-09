@@ -1,5 +1,5 @@
 class Jangle::Site
-  include Mongoid::Document
+  include Jangle::Mongoid::Document
 
   # -- Fields ---------------------------------------------------------------
   field :label,    :type => String
@@ -20,6 +20,22 @@ class Jangle::Site
     :dependent => :destroy do
     def find_by_full_path(full_path)
       @target.where(:full_path => full_path).first
+    end
+  end
+  references_many :jangle_templates,
+    :class_name => 'Jangle::Template',
+    :inverse_of => :jangle_site,
+    :dependent => :destroy do
+    def find_by_slug(slug)
+      @target.where(:slug => slug).first
+    end
+  end
+  references_many :jangle_widgets,
+    :class_name => 'Jangle::Widget',
+    :inverse_of => :jangle_site,
+    :dependent => :destroy do
+    def find_by_slug(slug)
+      @target.where(:slug => slug).first
     end
   end
   references_many :jangle_snippets,
@@ -55,5 +71,10 @@ class Jangle::Site
     find_by_hostname!(hostname)
   rescue Mongoid::Errors::DocumentNotFound
     return nil
+  end
+
+  # -- Instance Methods -----------------------------------------------------
+  def to_liquid
+    Jangle::Liquid::Drops::Site.new(self)
   end
 end

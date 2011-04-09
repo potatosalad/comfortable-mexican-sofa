@@ -1,7 +1,6 @@
 class Jangle::Upload
-  include Mongoid::Document
+  include Jangle::Mongoid::Document
   include Mongoid::Paperclip
-  include Mongoid::Timestamps
 
   # -- AR Extensions --------------------------------------------------------
   has_mongoid_attached_file :file, Jangle.config.upload_file_options

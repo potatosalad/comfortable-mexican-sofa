@@ -3,14 +3,18 @@ unless defined? Jangle::Application
   require File.expand_path('jangle/engine', File.dirname(__FILE__))
 end
 
-[ 'jangle/configuration',
-  'jangle/http_auth',
+require 'jangle/version'
+require 'jangle/configuration'
+require 'jangle/logger'
+require 'jangle/liquid'
+require 'jangle/mongoid'
+
+[ 'jangle/http_auth',
   'jangle/rails_extensions',
   'jangle/controller_methods',
   'jangle/view_hooks',
   'jangle/view_methods',
   'jangle/form_builder',
-  'jangle/mongoid/document',
   '../app/models/jangle/block',
   '../app/models/jangle/snippet',
   'jangle/cms_tag',

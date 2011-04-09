@@ -37,7 +37,19 @@ protected
     end
   end
 
-  def liquify(template)
-    Liquid::Template.parse(template).render('controller' => self)
+  def jangle_context
+    assigns = {
+      'site'              => @jangle_site,
+      'page'              => @jangle_page,
+      'current_page'      => self.params[:cms_path]
+    }.merge(flash.stringify_keys) # data from api
+
+    registers = {
+      :controller     => self,
+      :site           => @jangle_site,
+      :page           => @jangle_page
+    }
+
+    Liquid::Context.new({}, assigns, registers)
   end
 end

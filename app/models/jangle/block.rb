@@ -1,6 +1,5 @@
 class Jangle::Block
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include Jangle::Mongoid::Document
 
   # -- Fields ---------------------------------------------------------------
   field :label,   :type => String
@@ -9,6 +8,9 @@ class Jangle::Block
   # -- Relationships --------------------------------------------------------
   referenced_in :jangle_page,
     :class_name => 'Jangle::Page',
+    :inverse_of => :jangle_blocks
+  referenced_in :jangle_widget,
+    :class_name => 'Jangle::Widget',
     :inverse_of => :jangle_blocks
 
   # -- Validations ----------------------------------------------------------

@@ -1,6 +1,5 @@
 class Jangle::Snippet
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include Jangle::Mongoid::Document
 
   # -- Fields ---------------------------------------------------------------
   field :label,   :type => String
