@@ -33,6 +33,24 @@ class Jangle::Template
   validate :check_content_tag_presence
 
   # -- Class Methods --------------------------------------------------------
+
+  # Wrapper around load_from_file and find_by_slug
+  # returns layout object if loaded / found
+  def self.load_for_slug!(site, slug)
+    if Jangle.configuration.seed_data_path
+      load_from_file(site, slug)
+    else
+      site.jangle_templates.find_by_slug(slug)
+    end || raise(Mongoid::Errors::DocumentNotFound.new(self, slug), "Jangle::Layout with slug: #{slug} cannot be found")
+  end
+
+  # Non-blowing-up version of the method above
+  def self.load_for_slug(site, slug)
+    load_for_slug!(site, slug) 
+  rescue Mongoid::Errors::DocumentNotFound
+    nil
+  end
+
   # Tree-like structure for templates
   def self.options_for_select(jangle_site, jangle_template = nil, current_template = nil, depth = 0, spacer = '. . ')
     out = []

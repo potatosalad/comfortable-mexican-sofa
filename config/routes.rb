@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   scope :controller => :cms_content do
     get File.join(Jangle.config.cms_css_path, ':id') => :render_css, :as => 'cms_css'
     get File.join(Jangle.config.cms_js_path, ':id')  => :render_js,  :as => 'cms_js'
+    get File.join(Jangle.config.widget_css_path, ':id') => :render_widget_css, :as => 'widget_css'
+    get File.join(Jangle.config.widget_js_path,  ':id') => :render_widget_js,  :as => 'widget_js'
     get '/'             => :render_html,  :as => 'cms_html',  :path => '(*cms_path)'
   end
 end

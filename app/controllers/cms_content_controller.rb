@@ -3,6 +3,7 @@ class CmsContentController < ApplicationController
   before_filter :load_jangle_site
   before_filter :load_jangle_page,   :only => :render_html
   before_filter :load_jangle_layout, :only => [:render_css, :render_js]
+  before_filter :load_jangle_widget, :only => [:render_widget_css, :render_widget_js]
   
   caches_page :render_css, :render_js, :if => Proc.new { |c| Jangle.config.enable_caching }
   
@@ -17,6 +18,14 @@ class CmsContentController < ApplicationController
   
   def render_js
     render :text => @jangle_layout.js, :content_type => 'text/javascript'
+  end
+
+  def render_widget_css
+    render :text => @jangle_widget.css, :content_type => 'text/css'
+  end
+  
+  def render_widget_js
+    render :text => @jangle_widget.js, :content_type => 'text/javascript'
   end
 
   def to_liquid
@@ -45,6 +54,12 @@ protected
   
   def load_jangle_layout
     @jangle_layout = Jangle::Layout.load_for_slug!(@jangle_site, params[:id])
+  rescue Mongoid::Errors::DocumentNotFound
+    render :nothing => true, :status => 404
+  end
+
+  def load_jangle_widget
+    @jangle_widget = Jangle::Template.load_for_slug!(@jangle_site, params[:id])
   rescue Mongoid::Errors::DocumentNotFound
     render :nothing => true, :status => 404
   end

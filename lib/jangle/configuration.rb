@@ -35,8 +35,9 @@ module Jangle
     attr_accessor :override_host
 
     attr_accessor :cms_css_path
-
     attr_accessor :cms_js_path
+    attr_accessor :widget_css_path
+    attr_accessor :widget_js_path
 
     attr_accessor :enable_logs
     
@@ -52,8 +53,10 @@ module Jangle
       @enable_caching       = true
       @upload_file_options  = {}
       @override_host        = nil
-      @cms_css_path         = '/stylesheets'
-      @cms_js_path          = '/javascripts'
+      @cms_css_path         = '/stylesheets/layouts'
+      @cms_js_path          = '/javascripts/layouts'
+      @widget_css_path      = '/stylesheets/widgets'
+      @widget_js_path       = '/javascripts/widgets'
       @enable_logs          = true
     end
 
