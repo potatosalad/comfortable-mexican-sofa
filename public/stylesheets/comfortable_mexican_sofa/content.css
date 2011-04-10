@@ -174,12 +174,16 @@ form.search {
 
 /* -- Page Specific stuff ------------------------------------------------ */
 .c_jangle_layouts.a_index ul.list li .item .label,
-.c_jangle_snippets.a_index ul.list li .item .label {
+.c_jangle_snippets.a_index ul.list li .item .label,
+.c_jangle_templates.a_index ul.list li .item .label,
+.c_jangle_widgets.a_index ul.list li .item .label {
   margin-left: 32px;
 }
-.c_jangle_layouts.a_index ul.list li .item .icon {
+.c_jangle_layouts.a_index ul.list li .item .icon,
+.c_jangle_templates.a_index ul.list li .item .icon {
   background-image: url(/images/comfortable_mexican_sofa/icon_layout.gif);
 }
-.c_jangle_snippets.a_index ul.list li .item .icon {
+.c_jangle_snippets.a_index ul.list li .item .icon,
+.c_jangle_widgets.a_index ul.list li .item .icon {
   background-image: url(/images/comfortable_mexican_sofa/icon_snippet.gif);
 }

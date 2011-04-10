@@ -25,7 +25,7 @@ class Jangle::Page
   referenced_in :target_page,
     :class_name => 'Jangle::Page'
   references_many :jangle_blocks,
-    :class_name => 'Jangle::Block',
+    :class_name => 'Jangle::PageBlock',
     :inverse_of => :jangle_page,
     :dependent  => :destroy
   accepts_nested_attributes_for :jangle_blocks

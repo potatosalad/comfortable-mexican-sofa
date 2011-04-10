@@ -1,6 +1,9 @@
-class Jangle::Page
+class Jangle::Widget
   include Jangle::Mongoid::Document
   include Mongoid::Tree
+
+  include Models::Jangle::Extensions::Parse
+  include Models::Jangle::Extensions::Render
 
   attr_accessor :cms_tags
 
@@ -18,14 +21,12 @@ class Jangle::Page
     :class_name => 'Jangle::Template',
     :inverse_of => :jangle_widgets
   references_many :jangle_blocks,
-    :class_name => 'Jangle::Block',
+    :class_name => 'Jangle::WidgetBlock',
     :inverse_of => :jangle_widget,
     :dependent  => :destroy
   accepts_nested_attributes_for :jangle_blocks
 
   # -- Callbacks ------------------------------------------------------------
-  before_validation :assign_parent,
-                    :assign_full_path
   before_validation :assign_position,
                     :on => :create
   before_save :set_cached_content
@@ -36,13 +37,39 @@ class Jangle::Page
   # -- Class Methods --------------------------------------------------------
   # Tree-like structure for pages
   def self.options_for_select(jangle_site, jangle_widget = nil, current_widget = nil, depth = 0, exclude_self = true, spacer = '. . ')
-    return [] if (current_widget ||= jangle_site.jangle_widgets.root) == jangle_widget && exclude_self || !current_widget
     out = []
-    out << [ "#{spacer*depth}#{current_widget.label}", current_widget.id ] unless current_widget == jangle_widget
-    current_widget.children.each do |child|
-      out += options_for_select(jangle_site, jangle_widget, child, depth + 1, exclude_self, spacer)
+    [current_widget || jangle_site.jangle_widgets.roots].flatten.each do |widget|
+      next if jangle_widget == widget
+      out << [ "#{spacer*depth}#{widget.label}", widget.id ]
+      widget.children.each do |child|
+        out += options_for_select(jangle_site, jangle_widget, child, depth + 1, spacer)
+      end
     end
     return out.compact
+  end
+
+  def self.initialize_or_find(jangle_widget, slug)
+    load_for_slug(jangle_widget.jangle_site, slug) || new(:slug => slug)
+  end
+
+  # Wrapper around load_from_file and find_by_slug
+  # returns layout object if loaded / found
+  def self.load_for_slug!(site, slug)
+    if Jangle.configuration.seed_data_path
+      load_from_file(site, slug)
+    else
+      # FIX: This a bit odd... Snippet is used as a tag, so sometimes there's no site scope
+      # being passed. So we're enforcing this only if it's found. Need to review.
+      conditions = site ? {:conditions => {:jangle_site_id => site.id}} : {}
+      where(:slug => slug).find(:first, conditions)
+    end || raise(Mongoid::Errors::DocumentNotFound.new(self, slug), "Jangle::Widget with slug: #{slug} cannot be found")
+  end
+
+  # Non-blowing-up version of the method above
+  def self.load_for_slug(site, slug)
+    load_for_slug!(site, slug) 
+  rescue Mongoid::Errors::DocumentNotFound
+    nil
   end
 
   # -- Instance Methods -----------------------------------------------------
@@ -77,10 +104,6 @@ class Jangle::Page
   end
 
 protected
-
-  def assign_parent
-    self.parent ||= Jangle::Widget.root unless self == Jangle::Widget.root || Jangle::Widget.count == 0
-  end
 
   def assign_position
     return unless self.parent

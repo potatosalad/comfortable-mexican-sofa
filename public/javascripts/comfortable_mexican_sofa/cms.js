@@ -13,7 +13,9 @@ $.CMS = function(){
     $.CMS.enable_desc_toggle();
     $.CMS.enable_sortable_list();
     if($('form.new_jangle_page, form.edit_jangle_page').get(0)) $.CMS.enable_page_save_form();
+    if($('form.new_jangle_widget, form.edit_jangle_widget').get(0)) $.CMS.enable_widget_save_form();
     if($('#page_save').get(0))        $.CMS.enable_page_save_widget();
+    if($('#widget_save').get(0))        $.CMS.enable_widget_save_widget();
     if($('#uploader_button').get(0))  $.CMS.enable_uploader();
   });
   
@@ -57,6 +59,22 @@ $.CMS = function(){
       $('select#jangle_page_jangle_layout_id').bind('change.cms', function() {
         $.ajax({
           url: ['/' + admin_path_prefix, 'pages', $(this).attr('data-page-id'), 'form_blocks'].join('/'),
+          data: ({
+            layout_id: $(this).val()
+          }),
+          complete: function(){ 
+            $.CMS.enable_rich_text();
+            $.CMS.enable_date_picker();
+          }
+        })
+      });
+    },
+
+    // Load Widget Blocks on template change
+    load_widget_blocks: function(){
+      $('select#jangle_widget_jangle_template_id').bind('change.cms', function() {
+        $.ajax({
+          url: ['/' + admin_path_prefix, 'widgets', $(this).attr('data-widget-id'), 'form_blocks'].join('/'),
           data: ({
             layout_id: $(this).val()
           }),
@@ -181,8 +199,32 @@ $.CMS = function(){
         $('input#jangle_page_submit').click();
       })
     },
+
+    enable_widget_save_widget : function(){
+      $('#widget_save input').attr('checked', $('input#jangle_widget_is_published').is(':checked'));
+      $('#widget_save button').html($('input#jangle_widget_submit').val());
+      
+      $('#widget_save input').bind('click', function(){
+        $('input#jangle_widget_is_published').attr('checked', $(this).is(':checked'));
+      })
+      $('input#jangle_widget_is_published').bind('click', function(){
+        $('#widget_save input').attr('checked', $(this).is(':checked'));
+      })
+      $('#widget_save button').bind('click', function(){
+        $('input#jangle_widget_submit').click();
+      })
+    },
     
     enable_page_save_form : function(){
+      $('input[name=commit]').click(function() {
+        $(this).parents('form').attr('target', '');
+      });
+      $('input[name=preview]').click(function() {
+        $(this).parents('form').attr('target', '_blank');
+      });
+    },
+
+    enable_widget_save_form : function(){
       $('input[name=commit]').click(function() {
         $(this).parents('form').attr('target', '');
       });

@@ -1,0 +1,13 @@
+<% content_for :right_column do %>
+  <%= render :partial => 'jangle/uploads/index' %>
+<% end %>
+
+<%= form.text_field :label, :label => 'Template Name', :id => (@jangle_template.new_record?? 'slugify' : nil)%>
+<%= form.text_field :slug, :id => 'slug' %>
+<% if (options = Jangle::Template.options_for_select(@jangle_site, @jangle_template)).present? %>
+  <%= form.select :parent_id, [['---- Select Parent Template ----', nil]] + options %>
+<% end %>
+
+<%= form.text_area :content, :class => 'code' %>
+<%= form.text_area :css, :class => 'code_css' %>
+<%= form.text_area :js, :class => 'code_js' %>

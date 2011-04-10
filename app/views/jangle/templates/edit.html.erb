@@ -1,0 +1,6 @@
+<h1> Editing Template </h1>
+
+<%= cms_form_for @jangle_template, :url => {:action => :update} do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= form.submit 'Update Template' %>
+<% end %>

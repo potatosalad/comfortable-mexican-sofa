@@ -15,8 +15,6 @@ require 'jangle/mongoid'
   'jangle/view_hooks',
   'jangle/view_methods',
   'jangle/form_builder',
-  '../app/models/jangle/block',
-  '../app/models/jangle/snippet',
   'jangle/cms_tag',
   'jangle/cms_tag_resource'
 ].each do |path|

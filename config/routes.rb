@@ -13,7 +13,15 @@ Rails.application.routes.draw do
     resources :sites
     resources :layouts
     resources :templates
-    resources :widgets
+    resources :widgets do
+      member do
+        match :form_blocks
+        match :toggle_branch
+      end
+      collection do
+        match :reorder
+      end
+    end
     resources :snippets
     resources :uploads, :only => [:create, :destroy]
   end

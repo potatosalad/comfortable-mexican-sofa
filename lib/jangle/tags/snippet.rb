@@ -2,7 +2,7 @@ class CmsTag::Snippet
   include CmsTag
   include CmsTagResource
 
-  set_cms_tag_class Jangle::Snippet
+  set_cms_tag_class_name 'Jangle::Snippet'
 
   def identifier
     "#{self.class.name.underscore}_#{self.resource.slug}"

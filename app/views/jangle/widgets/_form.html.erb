@@ -1,0 +1,26 @@
+<% content_for :right_column do %>
+  <div id='widget_save' class='box'>
+    <button></button>
+  </div>
+  <%= render :partial => 'jangle/uploads/index' %>
+<% end %>
+
+<%= form.text_field :label, :id => (@jangle_widget.new_record?? 'slugify' : nil) %>
+
+<div class='widget_form_extras'>
+  <%= form.text_field :slug, :id => 'slug' %>
+  <% if (options = Jangle::Template.options_for_select(@jangle_site)).present? %>
+    <%= form.select :jangle_template_id, options, {}, 'data-widget-id' => @jangle_widget.id, :label => 'Template' %>
+  <% end %>
+  <% if (options = Jangle::Widget.options_for_select(@jangle_site, @jangle_widget)).present? %>
+    <%= form.select :parent_id, [['---- Select Parent Widget ----', nil]] + options %>
+  <% end %>
+  <%= cms_hook :widget_form, :object => form %>
+</div>
+
+<%= render :partial => 'form_blocks' %>
+
+<%= form.simple_field nil, nil, :class => 'submit_element' do %>
+  <%= form.submit @jangle_widget.new_record?? 'Create Widget' : 'Update Widget', :disable_builder => true %>
+  <%= form.submit 'Preview', :name => 'preview', :id => 'jangle_widget_preview', :disable_builder => true %>
+<% end %>

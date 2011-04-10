@@ -1,0 +1,39 @@
+<% 
+  jangle_widget    ||= index_branch 
+  has_children  = jangle_widget.children.present?
+  has_siblings  = jangle_widget.siblings.present?
+  branch_open   = (session[:jangle_widget_tree] || []).member?(jangle_widget.id.to_s) || jangle_widget.root?
+%>
+
+<li id='<%= dom_id(jangle_widget) %>'>
+  <div class='item'>
+    <div class='toggle <%= 'open' if branch_open %>'>
+      <%= 
+        if has_children && !jangle_widget.root?
+          link_to span_tag('toggle'), toggle_branch_jangle_widget_path(jangle_widget), :remote => true
+        end
+      %>
+    </div>
+    <div class='icon'>
+      <% if has_siblings %>
+        <div class='dragger'><span>drag</span></div>
+      <% end %>
+    </div>
+    <div class='action_links'>
+      <%= link_to 'Add Child Widget', new_jangle_widget_path(:parent_id => jangle_widget.id) %>
+      <%= link_to 'Edit', edit_jangle_widget_path(jangle_widget) %>
+      <%= link_to 'Delete', jangle_widget_path(jangle_widget), :method => :delete, :confirm => 'Are you sure?' %>
+    </div>
+    <div class='label'>
+      <%= link_to jangle_widget.label, edit_jangle_widget_path(jangle_widget) %>
+      <div class='sublabel'>
+        <%= jangle_widget.slug %><% if jangle_widget.jangle_template %> (<%= link_to jangle_widget.jangle_template.slug, edit_jangle_template_path(jangle_widget.jangle_template), :target => '_blank' %>)<% end %>
+      </div>
+    </div>
+  </div>
+  <% if has_children && branch_open %>
+    <ul>
+      <%= render :partial => 'index_branch', :collection => jangle_widget.children %>
+    </ul>
+  <% end %>
+</li>

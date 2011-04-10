@@ -1,0 +1,6 @@
+<%= link_to span_tag('Create New Widget'), new_jangle_widget_path, :class => 'big button' %>
+<h1>Widgets</h1>
+
+<ul class='list sortable'>
+  <%= render :partial => 'index_branch', :collection => @jangle_widgets %>
+</ul>

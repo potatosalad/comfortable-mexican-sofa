@@ -55,26 +55,29 @@ class Jangle::FormBuilder < ActionView::Helpers::FormBuilder
   
   # -- Tag Field Fields -----------------------------------------------------
   def default_tag_field(tag, options = {})
+    tag, obj  = tag
     label     = options[:label] || tag.label.to_s.titleize
     css_class = options[:css_class] || tag.class.name.underscore.downcase.idify
     
     field_css_class = case tag
-      when CmsTag::PageRichText                 then 'rich_text'
-      when CmsTag::PageText, CmsTag::FieldText  then 'code'
+      when CmsTag::PageRichText then 'rich_text'
+      when CmsTag::PageText,
+        CmsTag::FieldText,
+        CmsTag::TemplateText then 'code'
     end
     
     options[:content_field_method] ||= :text_field_tag
     field = 
       options[:field] || 
-      @template.send(options[:content_field_method], 'jangle_page[jangle_blocks_attributes][][content]', tag.content, :id => nil, :class => field_css_class)
+      @template.send(options[:content_field_method], "#{obj.class.name.underscore.idify}[jangle_blocks_attributes][][content]", tag.content, :id => nil, :class => field_css_class)
     
     %(
       <div class='form_element #{css_class}'>
         <div class='label'>#{label}</div>
         <div class='value'>
           #{field}
-          #{@template.hidden_field_tag('jangle_page[jangle_blocks_attributes][][label]', tag.label, :id => nil)}
-          #{@template.hidden_field_tag('jangle_page[jangle_blocks_attributes][][id]', tag.resource.record_id, :id => nil) if tag.resource.respond_to?(:record_id)}
+          #{@template.hidden_field_tag("#{obj.class.name.underscore.idify}[jangle_blocks_attributes][][label]", tag.label, :id => nil)}
+          #{@template.hidden_field_tag("#{obj.class.name.underscore.idify}[jangle_blocks_attributes][][id]", tag.resource.record_id, :id => nil) if tag.resource.respond_to?(:record_id)}
         </div>
       </div>
     ).html_safe
@@ -113,6 +116,10 @@ class Jangle::FormBuilder < ActionView::Helpers::FormBuilder
   end
   
   def page_rich_text(tag)
+    default_tag_field(tag, :content_field_method => :text_area_tag)
+  end
+
+  def template_text(tag)
     default_tag_field(tag, :content_field_method => :text_area_tag)
   end
   

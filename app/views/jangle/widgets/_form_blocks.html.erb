@@ -1,0 +1,7 @@
+<div id='form_blocks'>
+  <%= fields_for :jangle_blocks, :builder => Jangle::FormBuilder do |jangle_blocks| %>
+    <% @jangle_widget.cms_tags(true).each do |tag| %>
+      <%= jangle_blocks.send(tag.class.name.underscore.downcase.idify, [ tag, @jangle_widget ]) %>
+    <% end %>
+  <% end %>
+</div>

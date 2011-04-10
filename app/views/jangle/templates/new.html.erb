@@ -1,0 +1,6 @@
+<h1> New Template </h1>
+
+<%= cms_form_for @jangle_template, :url => {:action => :create} do |form| %>
+  <%= render :partial => 'form', :object => form %>
+  <%= form.submit 'Create Template' %>
+<% end %>

@@ -47,12 +47,12 @@ class Jangle::Template
   end
 
   # -- Instance Methods -----------------------------------------------------
-  # magical merging tag is {cms:widget:content} If parent layout has this tag
+  # magical merging tag is {cms:template:content} If parent layout has this tag
   # defined its content will be merged. If no such tag found, parent content
   # is ignored.
   def merged_content
     if parent
-      regex = /\{\{\s*cms:widget:content:?(?:(?::text)|(?::rich_text))?\s*\}\}/
+      regex = /\{\{\s*cms:template:content:?(?:(?::text)|(?::rich_text))?\s*\}\}/
       if parent.merged_content.match(regex)
         parent.merged_content.gsub(regex, content)
       else
@@ -65,9 +65,9 @@ class Jangle::Template
 
 protected
   def check_content_tag_presence
-    CmsTag.process_content((test_page = Jangle::Page.new), content)
-    if test_page.cms_tags.select{ |t| t.class.respond_to?(:cms_tag_class) ? t.class.cms_tag_class == Jangle::Block : false }.blank?
-      self.errors.add(:content, 'No cms page tags defined')
+    CmsTag.process_content((test_widget = Jangle::Widget.new), content)
+    if test_widget.cms_tags.select{ |t| t.class.respond_to?(:cms_tag_class) ? t.class.cms_tag_class == Jangle::WidgetBlock : false }.blank?
+      self.errors.add(:content, 'No cms widget tags defined')
     end
   end
 end

@@ -1,0 +1,23 @@
+<% jangle_template ||= index_branch %>
+
+<li id='jangle_template_<%= jangle_template.id %>'>
+  <div class='item'>
+    <div class='icon'></div>
+    <div class='action_links'>
+      <%= link_to 'Add Child Template', new_jangle_template_path(:parent_id => jangle_template.id) %>
+      <%= link_to 'Edit', edit_jangle_template_path(jangle_template) %>
+      <%= link_to 'Delete', jangle_template_path(jangle_template), :method => :delete, :confirm => 'Are you sure?' %>
+    </div>
+    <div class='label'>
+      <%= link_to jangle_template.label, edit_jangle_template_path(jangle_template) %>
+      <div class='sublabel'>
+        <%= link_to jangle_template.slug, edit_jangle_template_path(jangle_template) %>
+      </div>
+    </div>
+  </div>
+  <% if jangle_template.children.present? %>
+    <ul>
+      <%= render :partial => 'index_branch', :collection => jangle_template.children %>
+    </ul>
+  <% end %>
+</li>

@@ -1,0 +1,6 @@
+<%= link_to span_tag('Create New Template'), new_jangle_template_path, :class => 'big button' %>
+<h1>Templates</h1>
+
+<ul class='list'>
+  <%= render :partial => 'index_branch', :collection => @jangle_templates %>
+</ul>

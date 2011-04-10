@@ -11,15 +11,19 @@ module CmsTagResource
 
   module ClassMethods
     def cms_tag_class
-      @cms_tag_class ||= Jangle::Block
+      cms_tag_class_name.constantize
     end
 
-    def cms_tag_class=(klass)
-      @cms_tag_class = klass
+    def cms_tag_class_name
+      @cms_tag_class_name ||= 'Jangle::PageBlock'
     end
 
-    def set_cms_tag_class(klass)
-      self.cms_tag_class = klass
+    def cms_tag_class_name=(klass)
+      @cms_tag_class_name = klass
+    end
+
+    def set_cms_tag_class_name(klass)
+      self.cms_tag_class_name = klass
     end
 
     def initialize_or_find(jangle_page, label)

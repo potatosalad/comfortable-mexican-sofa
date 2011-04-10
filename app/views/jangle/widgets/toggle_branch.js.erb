@@ -1,0 +1,11 @@
+var li = $('li#jangle_widget_<%=@jangle_widget.id%>');
+li.find('.item .toggle').first().toggleClass('open');
+
+<% if session[:jangle_widget_tree].member?(@jangle_widget.id.to_s) %>
+  if(!li.find('ul')[0]) {
+    li.append('<ul><%= escape_javascript(render :partial => "index_branch", :collection => @jangle_widget.children) %></ul>');
+    $.CMS.enable_sortable_list();
+  }
+<% else %>
+  li.find('ul').remove();
+<% end %>

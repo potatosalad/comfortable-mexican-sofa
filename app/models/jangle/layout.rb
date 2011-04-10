@@ -111,7 +111,7 @@ protected
 
   def check_content_tag_presence
     CmsTag.process_content((test_page = Jangle::Page.new), content)
-    if test_page.cms_tags.select{ |t| t.class.respond_to?(:cms_tag_class) ? t.class.cms_tag_class == Jangle::Block : false }.blank?
+    if test_page.cms_tags.select{ |t| t.class.respond_to?(:cms_tag_class) ? t.class.cms_tag_class == Jangle::PageBlock : false }.blank?
       self.errors.add(:content, 'No cms page tags defined')
     end
   end
