@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails',          '>= 3.0.5'
+gem 'rails',          '>= 3.0.7'
 
 gem 'active_link_to', '>= 0.0.6'
 gem 'mongoid',        '~> 2.0'
@@ -10,6 +10,7 @@ gem 'mongoid-paperclip', :require => 'mongoid_paperclip'
 gem 'mime-types',        :require => 'mime/types'
 gem 'mongoid_slug',      :require => 'mongoid/slug'
 gem 'mongoid-tree',      :require => 'mongoid/tree'
+gem 'inherited_resources'
 
 gem 'liquid'
 

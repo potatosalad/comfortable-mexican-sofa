@@ -56,6 +56,9 @@ class Jangle::Site
     :uniqueness => true,
     :format     => { :with => /^[\w\.\-]+$/ }
 
+  # -- Named Scopes ---------------------------------------------------------
+  scope :match_domain, lambda { |domain| { :any_in => { :domains => [*domain] } } }
+
   # -- Class Methods --------------------------------------------------------
   def self.options_for_select
     Jangle::Site.all.collect{|s| ["#{s.label} (#{s.hostname})", s.id]}

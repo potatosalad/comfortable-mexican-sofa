@@ -24,7 +24,8 @@ class Jangle::Page
     :inverse_of => :jangle_pages
   referenced_in :target_page,
     :class_name => 'Jangle::Page'
-  references_many :jangle_blocks,
+  #references_many :jangle_blocks,
+  embeds_many :jangle_blocks,
     :class_name => 'Jangle::PageBlock',
     :inverse_of => :jangle_page,
     :dependent  => :destroy

@@ -1,3 +1,7 @@
+module Jangle
+  class TemplatesController < Jangle::InheritedBaseController
+end
+=begin
 class Jangle::TemplatesController < Jangle::BaseController
 
   before_filter :build_jangle_template, :only => [:new, :create]
@@ -55,3 +59,4 @@ protected
     redirect_to :action => :index
   end
 end
+=end

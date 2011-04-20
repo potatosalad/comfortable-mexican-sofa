@@ -20,7 +20,8 @@ class Jangle::Widget
   referenced_in :jangle_template,
     :class_name => 'Jangle::Template',
     :inverse_of => :jangle_widgets
-  references_many :jangle_blocks,
+  #references_many :jangle_blocks,
+  embeds_many :jangle_blocks,
     :class_name => 'Jangle::WidgetBlock',
     :inverse_of => :jangle_widget,
     :dependent  => :destroy
